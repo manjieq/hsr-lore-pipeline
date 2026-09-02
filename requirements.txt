@@ -1,0 +1,4 @@
+requests>=2.31
+selectolax>=0.3.17
+ollama>=0.3.0
+pytest>=8.0
