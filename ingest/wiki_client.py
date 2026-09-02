@@ -69,7 +69,8 @@ def api_get(params: dict, refresh: bool = False) -> dict:
 
 
 def get_category_members(category_title: str, refresh: bool = False) -> list[str]:
-    """Return every page title in a category, paginating via cmcontinue."""
+    """Return every article page title in a category (subcategories are
+    excluded via cmtype=page), paginating via cmcontinue."""
     titles: list[str] = []
     cmcontinue = None
     while True:
@@ -77,6 +78,7 @@ def get_category_members(category_title: str, refresh: bool = False) -> list[str
             "action": "query",
             "list": "categorymembers",
             "cmtitle": category_title,
+            "cmtype": "page",
             "cmlimit": 500,
             "format": "json",
         }

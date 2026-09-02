@@ -43,7 +43,19 @@ def scrape_one(title: str, refresh: bool) -> dict | None:
 
     flavor_raw = extract_template_arg(wikitext, "Description")
     if not flavor_raw:
-        return {"title": title, "qa_flags": ["no_description_template"]}
+        return {
+            "id": slugify(title),
+            "category": "light_cone",
+            "name": title,
+            "subtitle": "Light Cone",
+            "source_type": "wiki",
+            "source_url": "https://honkai-star-rail.fandom.com/wiki/" + title.replace(" ", "_"),
+            "raw_text": "",
+            "image_url": None,
+            "game_version_seen": None,
+            "qa_flags": ["no_description_template"],
+            "reviewed": False,
+        }
     flavor = clean_flavor_text(flavor_raw)
 
     rarity = extract_infobox_field(wikitext, "rarity")
