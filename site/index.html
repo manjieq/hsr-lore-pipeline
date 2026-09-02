@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HSR Lore Bites</title>
+  <meta name="description" content="Bite-sized Honkai: Star Rail lore, paraphrased daily. Tap to read the real in-game text." />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <h1>HSR Lore Bites</h1>
+    <p class="tagline">One piece of Honkai: Star Rail lore a day, in plain language. Tap any card to read the real thing.</p>
+  </header>
+
+  <main>
+    <section id="daily-section" aria-label="Today's fact">
+      <h2 class="section-label">Today's fact</h2>
+      <div id="daily-card-slot"></div>
+    </section>
+
+    <section id="browse-section" aria-label="Browse all lore">
+      <div class="browse-header">
+        <h2 class="section-label">Browse all</h2>
+        <div id="filter-tabs" class="filter-tabs" role="tablist"></div>
+      </div>
+      <div id="browse-grid" class="card-grid"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>
+      Fan-made, non-commercial project. All quoted game text, names, and imagery belong to
+      COGNOSPHERE / HoYoverse. Every entry links back to its source &mdash; this project doesn't
+      claim authorship of any in-game text.
+    </p>
+    <p><a href="https://github.com/manjieq/hsr-lore-pipeline" target="_blank" rel="noopener">Source on GitHub</a></p>
+  </footer>
+
+  <script src="js/select-daily.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

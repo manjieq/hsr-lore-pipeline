@@ -226,9 +226,11 @@ change to support that later.
   below reaches a meaningfully working state (not after every small edit) —
   e.g. once the site renders sample data, once the daily-rotation logic is
   tested, once a real scrape slice works, etc.
-- Ordinary commits for this repo do not include the Claude co-authorship
-  trailer — flagged to the user directly in chat since it's a standing
-  tool-attribution behavior, not a plan detail.
+- Commits made by Claude Code in this repo include a standard
+  `Co-Authored-By: Claude` trailer — this is a fixed tool-attribution
+  behavior, not something togglable per-project. Flagged to the user
+  directly in chat; they're free to amend commits afterward if they don't
+  want it in the final history.
 
 ## Phases
 
