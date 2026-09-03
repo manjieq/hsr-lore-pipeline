@@ -59,6 +59,7 @@ def select_daily_id(cycle_data: dict, entries_by_id: dict[str, dict], today: dat
 
 
 def build_or_extend_cycle(entries: list[dict], existing_cycle_data: dict | None) -> dict:
+    known_ids = {e["id"] for e in entries}
     eligible_ids = [e["id"] for e in entries if is_eligible(e)]
 
     if existing_cycle_data is None:
@@ -71,10 +72,15 @@ def build_or_extend_cycle(entries: list[dict], existing_cycle_data: dict | None)
             "generated_at": datetime.now(timezone.utc).isoformat(),
         }
 
-    existing_ids = set(existing_cycle_data["cycle"])
-    new_ids = [eid for eid in eligible_ids if eid not in existing_ids]
+    # Drop ids that no longer correspond to any entry at all (e.g. an id
+    # that changed when a hand-authored placeholder got superseded by its
+    # real pipeline-derived id) -- but keep ids that still exist and are
+    # merely ineligible right now, since select_daily_id relies on those
+    # staying in place for cycle-position stability.
+    surviving_cycle = [eid for eid in existing_cycle_data["cycle"] if eid in known_ids]
+    new_ids = [eid for eid in eligible_ids if eid not in set(surviving_cycle)]
     return {
-        "cycle": existing_cycle_data["cycle"] + new_ids,
+        "cycle": surviving_cycle + new_ids,
         "cycle_start_date": existing_cycle_data["cycle_start_date"],
         "generated_at": datetime.now(timezone.utc).isoformat(),
     }

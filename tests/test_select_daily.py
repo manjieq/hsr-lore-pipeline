@@ -127,3 +127,18 @@ def test_extend_does_not_duplicate_already_present_ids():
     entries = [{"id": "a", "reviewed": True, "qa_flags": []}]
     result = build_or_extend_cycle(entries, existing_cycle_data=existing)
     assert result["cycle"] == ["a"]
+
+
+def test_extend_prunes_orphaned_ids_but_keeps_ineligible_existing_ones():
+    # "old" no longer corresponds to any entry at all (e.g. it was replaced
+    # by a differently-slugged id) and should be dropped. "b" still exists
+    # but is currently ineligible (unreviewed) and must be kept in place,
+    # since select_daily_id relies on cycle positions staying stable.
+    existing = {"cycle": ["old", "a", "b"], "cycle_start_date": "2026-01-01", "generated_at": "..."}
+    entries = [
+        {"id": "a", "reviewed": True, "qa_flags": []},
+        {"id": "b", "reviewed": False, "qa_flags": []},
+        {"id": "c", "reviewed": True, "qa_flags": []},  # newly eligible
+    ]
+    result = build_or_extend_cycle(entries, existing_cycle_data=existing)
+    assert result["cycle"] == ["a", "b", "c"]

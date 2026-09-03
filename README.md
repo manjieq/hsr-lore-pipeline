@@ -19,6 +19,8 @@ endorsed by them, and is not monetized.
 
 ## Status
 
-Currently a manually-curated sample of 10 entries powering the site UI.
-Automated scraping + local-LLM paraphrasing pipeline is in progress — see
-the phases in `docs/PLANNING.md`.
+The full light cone catalog (168 entries) is now live, scraped from the wiki
+and paraphrased locally via Ollama (`qwen2.5:7b-instruct`); 19 entries are
+held back pending human review of an automated faithfulness flag. Relic sets
+are still the original 5 hand-authored samples — see the phases in
+`docs/PLANNING.md` for what's next.
