@@ -55,6 +55,20 @@ def paraphrase_one(name: str, category: str, raw_text: str) -> str:
     return data["short_text"].strip()
 
 
+# qa_flags that pipeline/validate.py owns and recomputes from scratch each
+# time it runs -- as opposed to scrape-level flags (e.g.
+# flavor_text_unexpectedly_long) that come from ingest/wiki_scrape_*.py and
+# must survive both a paraphrase run and a revalidate-only run untouched.
+VALIDATE_OWNED_FLAGS = (
+    "empty_short_text",
+    "short_text_too_short",
+    "short_text_too_long",
+    "short_text_identical_to_raw",
+    "possible_refusal_artifact",
+    "possible_hallucinated_name",
+)
+
+
 def process_entries(entries: list[dict], limit: int | None = None) -> list[dict]:
     processed = 0
     for entry in entries:
@@ -76,9 +90,7 @@ def process_entries(entries: list[dict], limit: int | None = None) -> list[dict]
 
         short_text = paraphrase_one(entry["name"], entry["category"], entry["raw_text"])
         flags = list(entry.get("qa_flags") or [])
-        flags = [f for f in flags if f not in ("empty_short_text", "short_text_too_short",
-                                                 "short_text_too_long", "short_text_identical_to_raw",
-                                                 "possible_refusal_artifact", "possible_hallucinated_name")]
+        flags = [f for f in flags if f not in VALIDATE_OWNED_FLAGS]
         flags.extend(validate_short_text(short_text, entry["raw_text"], entry["name"]))
 
         entry["short_text"] = short_text
@@ -92,15 +104,43 @@ def process_entries(entries: list[dict], limit: int | None = None) -> list[dict]
     return entries
 
 
+def revalidate_entries(entries: list[dict]) -> list[dict]:
+    """Re-run validate_short_text against each entry's *existing*
+    short_text, without calling Ollama again. For when pipeline/validate.py's
+    heuristic itself changes (as opposed to the source text or the prompt)
+    and already-paraphrased entries just need their qa_flags refreshed, not
+    reworded. Scrape-level flags are left untouched."""
+    changed = 0
+    for entry in entries:
+        if not entry.get("short_text"):
+            continue
+        old_flags = list(entry.get("qa_flags") or [])
+        kept = [f for f in old_flags if f not in VALIDATE_OWNED_FLAGS]
+        new_flags = kept + validate_short_text(entry["short_text"], entry["raw_text"], entry["name"])
+        if new_flags != old_flags:
+            changed += 1
+            print(f"  revalidated: {entry['name']}: {old_flags} -> {new_flags}", file=sys.stderr)
+        entry["qa_flags"] = new_flags
+
+    print(f"Revalidated {len(entries)} entries; {changed} changed.", file=sys.stderr)
+    return entries
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("input_path")
     parser.add_argument("output_path")
     parser.add_argument("--limit", type=int, default=None)
+    parser.add_argument(
+        "--revalidate",
+        action="store_true",
+        help="Re-run QA checks on existing short_text without calling Ollama again "
+        "(use after a pipeline/validate.py change; ignores --limit)",
+    )
     args = parser.parse_args()
 
     entries = json.loads(Path(args.input_path).read_text(encoding="utf-8"))
-    entries = process_entries(entries, limit=args.limit)
+    entries = revalidate_entries(entries) if args.revalidate else process_entries(entries, limit=args.limit)
     Path(args.output_path).write_text(json.dumps(entries, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
