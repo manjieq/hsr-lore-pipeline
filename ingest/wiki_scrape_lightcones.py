@@ -25,11 +25,15 @@ from ingest.wikitext_utils import clean_flavor_text, extract_infobox_field, extr
 CATEGORY = "Category:Light Cones"
 OUT_PATH = Path(__file__).resolve().parent.parent / "data" / "raw_cache" / "lightcones_wiki_raw.json"
 
-# In-game flavor text is inherently short (a handful of sentences); this is a
-# sanity ceiling, not a truncation policy — if a page's Description template
+# Sanity ceiling, not a truncation policy — if a page's Description template
 # comes back far longer than any real light cone description, something's
 # wrong with the extraction and it's better to flag it than silently ingest.
-MAX_REASONABLE_FLAVOR_CHARS = 700
+# Originally set to 700 assuming flavor text was always a handful of
+# sentences; a full scrape of all 169 light cones showed that's wrong for a
+# lot of real entries (median ~475 chars, but many narrative-style 5-star
+# descriptions legitimately run 1000-2000+ chars), so this was raised well
+# above the observed real max (~2030 chars) to stop flagging genuine content.
+MAX_REASONABLE_FLAVOR_CHARS = 3000
 
 
 def slugify(name: str) -> str:
