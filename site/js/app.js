@@ -1,5 +1,5 @@
 (function () {
-  const CATEGORY_LABELS = { light_cone: "Light Cone", relic_set: "Relic Set" };
+  const CATEGORY_LABELS = { light_cone: "Light Cone", relic_set: "Relic Set", character_story: "Character Story" };
 
   let entries = [];
   let entriesById = new Map();

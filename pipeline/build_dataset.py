@@ -51,6 +51,7 @@ CYCLE_PATH = REPO_ROOT / "site" / "data" / "daily_cycle.json"
 CATEGORY_SOURCES = {
     "light_cone": REPO_ROOT / "data" / "raw_cache" / "lightcones_paraphrased_full.json",
     "relic_set": REPO_ROOT / "data" / "raw_cache" / "relicsets_paraphrased_full.json",
+    "character_story": REPO_ROOT / "data" / "raw_cache" / "characterstories_paraphrased_full.json",
 }
 
 

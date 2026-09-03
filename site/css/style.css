@@ -8,6 +8,7 @@
   --border: #e6e1d8;
   --badge-lc: #3a6ea5;
   --badge-rs: #a54e3a;
+  --badge-cs: #4e8a5f;
   color-scheme: light;
 }
 
@@ -22,6 +23,7 @@
     --border: #322b3d;
     --badge-lc: #7fb1e0;
     --badge-rs: #e0a37f;
+    --badge-cs: #8fcf9f;
     color-scheme: dark;
   }
 }
@@ -89,6 +91,7 @@ main {
 }
 .card-badge.light_cone { background: var(--badge-lc); }
 .card-badge.relic_set { background: var(--badge-rs); }
+.card-badge.character_story { background: var(--badge-cs); }
 
 .card-name {
   font-size: 1.15rem;

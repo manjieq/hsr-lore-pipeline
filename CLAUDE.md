@@ -134,12 +134,47 @@ platform fact, not a bug to work around; a real compliance check needs a
 human in an actual browser, which `docs/PLANNING.md` already flagged as a
 manual, one-time step before the first real scrape.
 
-**Adding a new lore category** (e.g. character stories, per
-`docs/PLANNING.md`'s future-work section) is meant to be additive: write a
-new `ingest/wiki_scrape_<category>.py` following the light-cone/relic-set
-pattern, add its raw_cache path to `CATEGORY_SOURCES` in
-`pipeline/build_dataset.py`, and everything downstream (paraphrase,
+**Adding a new lore category** is meant to be additive: write a new
+`ingest/wiki_scrape_<category>.py`, add its raw_cache path to
+`CATEGORY_SOURCES` in `pipeline/build_dataset.py`, add a label to
+`CATEGORY_LABELS` and a `.card-badge.<category>` color in
+`site/js/app.js`/`site/css/style.css`, and everything else (paraphrase,
 validate, site rendering, daily rotation) keeps working unchanged.
+`character_story` (`ingest/wiki_scrape_character_stories.py`) is the first
+category built this way after light cones and relic sets, and is a useful
+reference for the next one:
+- Its wiki structure needed a genuinely new extractor —
+  `ingest/wikitext_utils.py`'s `extract_template_params` — because a
+  character's numbered stories live in one `{{Character Story|text1=...
+  |mention1=...|text2=...}}` template on a `<Name>/Lore` subpage, a
+  multi-named-parameter shape neither `extract_template_arg` (single
+  positional arg) nor `extract_infobox_field` (one `|field = value` per
+  line) handles. Don't assume a new category reuses the existing helpers
+  unscoped — check the real wikitext first, the way this one and relic
+  sets' piece-page stitching both did.
+- Each numbered story is its own dataset entry (`scrape_one` returns a
+  *list*, unlike the other two scrapers), not one entry per character —
+  concatenating a character's ~4-5 stories into one `raw_text` risked the
+  same too-long-to-paraphrase problem as a dense relic set's lore. Entry
+  `name` includes the story index (`"<Character> — Story <N>"`) since
+  `build_dataset.py` merges by `(category, normalized name)` — several
+  same-named entries would silently collide.
+- `MAX_REASONABLE_FLAVOR_CHARS` in the new scraper is a starting guess
+  from a 5-character spot check, not a full-scrape calibration like the
+  other two categories' — expect it to need raising (see those two
+  scrapers' own comments for how that calibration was done last time).
+- Scraping all ~86 characters × ~4-5 stories (roughly 300-400 entries, on
+  top of the existing 228) hasn't been run yet — only spot-checked against
+  a handful of characters — pending the `robots.txt` check above given
+  it'd be the largest scrape by far.
+
+Fixing `extract_template_params` also surfaced a real, separate bug:
+`clean_flavor_text` wasn't stripping `{{Rubi|base|ruby}}` (a ruby/furigana
+-style gloss), which had leaked into the *live* dataset's `raw_text` for
+two already-shipped relic-set entries. Fixed and backfilled directly into
+the affected raw_cache entries (not just the scraper) — a reminder that a
+markup-stripping bug can sit unnoticed in already-published `raw_text`
+since it's not validated as strictly as `short_text` is.
 
 **Hard project constraints** (see `docs/PLANNING.md` for the full
 reasoning): zero cost — no paid APIs or hosting; wiki is the primary and
