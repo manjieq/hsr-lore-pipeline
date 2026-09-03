@@ -19,17 +19,39 @@ REFUSAL_MARKERS = (
 )
 
 
-def _strip_possessive(word: str) -> str:
-    """Normalize a trailing possessive marker so "Herta's" and "Herta"
-    compare as the same name: the source text and the AI paraphrase don't
-    always agree on whether to carry a possessive "'s" (or the bare
-    trailing "'" used after a name already ending in "s") through a
-    rewrite, and that shouldn't by itself count as a hallucinated name."""
-    if word.endswith("'s"):
-        return word[:-2]
-    if word.endswith("'"):
-        return word[:-1]
+def _normalize_noun_form(word: str) -> str:
+    """Normalize a token for comparison so minor, non-meaningful surface
+    differences don't by themselves count as a hallucinated name:
+
+    - A trailing possessive ("Herta's", or the bare trailing "'" used
+      after a name already ending in "s") is stripped in a loop rather
+      than a single pass, since a possessive can end up with a second
+      trailing "'" from an enclosing stylistic quote (e.g. paraphrase
+      output styled as "'Sparxie's'" -- the tokenizer captures the
+      closing quote as part of the word).
+    - A plain trailing "s" is then also stripped, so a plural in the
+      source ("Cloud Knights", "Stellaron Hunters", "Silvermane Guards"
+      -- HSR's own faction/group names are very often plural) matches a
+      singular reference in the paraphrase ("a Cloud Knight"), or vice
+      versa. This is deliberately approximate: it can also conflate two
+      genuinely different words that happen to differ only by a trailing
+      "s", but that's judged less likely than the plural/singular and
+      possessive mismatches it fixes, which recur constantly in practice."""
+    while word.endswith("'s") or word.endswith("'"):
+        word = word[:-2] if word.endswith("'s") else word[:-1]
+    if word.endswith("s") and len(word) > 3:
+        word = word[:-1]
     return word
+
+
+# CJK Unified Ideographs, Hiragana, Katakana, Hangul syllables -- any of
+# these appearing in an English short_text is a sign the local model
+# partially reverted to (or never left) Chinese/Japanese/Korean rather
+# than fully paraphrasing in English, a real failure mode observed in
+# production (e.g. "...reveals the代价 of a prophet's warnings...").
+_NON_LATIN_SCRIPT_RE = re.compile(
+    "[一-鿿぀-ヿ가-힯]"  # CJK ideographs, hiragana/katakana, hangul
+)
 
 
 
@@ -82,7 +104,7 @@ def _proper_nouns(text: str, *, skip_sentence_initial: bool) -> set[str]:
         if skip_sentence_initial and _is_sentence_initial(text, m.start()):
             continue
         if tok[0].isupper() and tok.lower() not in _COMMON_WORDS:
-            nouns.add(_strip_possessive(tok))
+            nouns.add(_normalize_noun_form(tok))
     return nouns
 
 
@@ -109,6 +131,9 @@ def validate_short_text(short_text: str, raw_text: str, name: str) -> list[str]:
     lowered = short_text.lower()
     if any(marker in lowered for marker in REFUSAL_MARKERS):
         flags.append("possible_refusal_artifact")
+
+    if _NON_LATIN_SCRIPT_RE.search(short_text):
+        flags.append("possible_untranslated_text")
 
     source_nouns = _proper_nouns(raw_text, skip_sentence_initial=True) | _proper_nouns(
         name, skip_sentence_initial=False

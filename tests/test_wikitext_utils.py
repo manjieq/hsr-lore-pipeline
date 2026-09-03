@@ -61,6 +61,59 @@ def test_clean_flavor_text_strips_rubi_annotations():
     assert clean_flavor_text(raw) == "The thoughts of Cerces became enhanced."
 
 
+def test_clean_flavor_text_picks_the_m_variant_of_mc_template():
+    assert clean_flavor_text("{{MC|m=He|f=She}} walked in.") == "He walked in."
+    assert clean_flavor_text("{{MC|m=man|f=woman}}") == "man"
+
+
+def test_clean_flavor_text_renders_obfuscate_as_block_characters():
+    assert clean_flavor_text("Agent {{Obfuscate|3}} arrived.") == "Agent ▇▇▇ arrived."
+    assert clean_flavor_text("Agent {{Obfuscate|-}} arrived.") == "Agent ▇ arrived."
+
+
+def test_clean_flavor_text_unwraps_sic_template():
+    assert clean_flavor_text("wondered if {{sic|the}} answer was near.") == "wondered if the answer was near."
+    assert clean_flavor_text("qualifying on the {{sic|Herta space station}} is rare.") == (
+        "qualifying on the Herta space station is rare."
+    )
+
+
+def test_clean_flavor_text_drops_hidden_sic_template():
+    assert clean_flavor_text("Researchers at the {{sic|space station Herta|hide=1}} agree.") == (
+        "Researchers at the agree."
+    )
+
+
+def test_clean_flavor_text_extracts_color_template_text_regardless_of_param_order():
+    # Real usage puts the text in different positions relative to
+    # "keyword" and "nobold=1" across different pages.
+    assert clean_flavor_text('{{Color|keyword|"Rule 1: Be prepared."|nobold=1}}') == '"Rule 1: Be prepared."'
+    assert clean_flavor_text("{{Color|keyword|nobold=1|Dazzling Ninja Hero}}") == "Dazzling Ninja Hero"
+
+
+def test_clean_flavor_text_picks_positional_mc_variant():
+    assert clean_flavor_text("{{MC|boy|girl}} ran home.") == "boy ran home."
+
+
+def test_clean_flavor_text_treats_non_digit_obfuscate_arg_as_one_block():
+    assert clean_flavor_text("Agent {{Obfuscate|----}} arrived.") == "Agent ▇ arrived."
+
+
+def test_clean_flavor_text_strips_bare_sic_template():
+    assert clean_flavor_text("A pack of {{sic}} direwolves.") == "A pack of direwolves."
+
+
+def test_clean_flavor_text_extracts_character_page_link_name():
+    assert clean_flavor_text("As noted by {{Character Page Link|Sampo|ref=1}}, it's true.") == (
+        "As noted by Sampo, it's true."
+    )
+
+
+def test_clean_flavor_text_drops_ja_and_zh_asides():
+    assert clean_flavor_text("A pun on {{ja|魔法使い}} meaning magician.") == "A pun on meaning magician."
+    assert clean_flavor_text("Grandmother, or {{zh|外婆|wàipó}} in Chinese.") == "Grandmother, or in Chinese."
+
+
 def test_extract_template_params_reads_numbered_fields():
     # Shaped like the real {{Character Story|...}} template on
     # <Character>/Lore pages (see ingest/wiki_scrape_character_stories.py).

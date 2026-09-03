@@ -29,7 +29,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from ingest.wiki_client import get_category_members, get_page_wikitext
+from ingest.wiki_client import get_category_members, get_page_wikitext, page_url
 from ingest.wikitext_utils import clean_flavor_text, extract_infobox_field, extract_section
 
 CATEGORY = "Category:Relic Sets"
@@ -59,13 +59,9 @@ def slugify(name: str) -> str:
     return f"relic-set-{slug}"
 
 
-def piece_page_url(title: str) -> str:
-    return "https://honkai-star-rail.fandom.com/wiki/" + title.replace(" ", "_")
-
-
 def scrape_one(title: str, refresh: bool) -> dict:
     set_wikitext = get_page_wikitext(title, refresh=refresh)
-    source_url = piece_page_url(title)
+    source_url = page_url(title)
 
     piece_fields = CAVERN_RELIC_PIECES if extract_infobox_field(set_wikitext, "head") else PLANAR_ORNAMENT_PIECES
     is_ornament = piece_fields is PLANAR_ORNAMENT_PIECES

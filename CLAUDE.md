@@ -88,24 +88,29 @@ editing pipeline code:
   and persist across paraphrase/revalidate runs.
 - Validate-owned flags (`empty_short_text`, `short_text_too_short/long`,
   `short_text_identical_to_raw`, `possible_refusal_artifact`,
-  `possible_hallucinated_name` — enumerated as `VALIDATE_OWNED_FLAGS` in
-  `pipeline/paraphrase.py`) are wiped and recomputed from scratch by
-  `pipeline/validate.py` every time an entry is (re)paraphrased or
-  revalidated.
+  `possible_hallucinated_name`, `possible_untranslated_text` — enumerated
+  as `VALIDATE_OWNED_FLAGS` in `pipeline/paraphrase.py`) are wiped and
+  recomputed from scratch by `pipeline/validate.py` every time an entry is
+  (re)paraphrased or revalidated.
 
 **The `possible_hallucinated_name` heuristic is deliberately rough** (its
 own docstring says so): it compares capitalized-word tokens between
 `short_text` and `raw_text`/`name`, skipping sentence-initial words (to
-avoid flagging ordinary capitalization) and normalizing trailing
-possessives. Known false-positive shapes worth recognizing before "fixing"
-another one: a verbatim quote whose opening word happens to be
-sentence-initial in the source won't match the same word reused mid-sentence
-in the paraphrase; a faithful reword can fail to match morphologically
-(e.g. source "Ascetics of Lotophagism" vs paraphrase "Lotophagists"). It
-also does **not** check factual/lore accuracy — a wrong acronym expansion or
-a fourth-wall break (e.g. paraphrase naming the game itself, which
-`prompts/paraphrase_v1.txt` explicitly forbids) won't trip any automated
-flag and needs an actual read against the source.
+avoid flagging ordinary capitalization) and normalizing away trailing
+possessives *and* a plain trailing "s" (`_normalize_noun_form` — HSR's own
+faction/group names are very often plural, "Cloud Knights", "Stellaron
+Hunters", "Silvermane Guards", so a paraphrase referring to one member
+singular needs this to not get flagged). Known false-positive shapes worth
+recognizing before "fixing" another one: a verbatim quote whose opening
+word happens to be sentence-initial in the source won't match the same
+word reused mid-sentence in the paraphrase; a word that's literally the
+first word of `raw_text` itself hits the same sentence-initial exclusion;
+a faithful reword can fail to match morphologically beyond simple
+pluralization (e.g. source "Ascetics of Lotophagism" vs paraphrase
+"Lotophagists"). It also does **not** check factual/lore accuracy — a
+wrong acronym expansion or a fourth-wall break (e.g. paraphrase naming the
+game itself, which `prompts/paraphrase_v1.txt` explicitly forbids) won't
+trip any automated flag and needs an actual read against the source.
 
 **The daily-selection algorithm is intentionally duplicated** in
 `pipeline/select_daily.py` (Python, used by `build_dataset.py` and by
@@ -141,8 +146,9 @@ manual, one-time step before the first real scrape.
 `site/js/app.js`/`site/css/style.css`, and everything else (paraphrase,
 validate, site rendering, daily rotation) keeps working unchanged.
 `character_story` (`ingest/wiki_scrape_character_stories.py`) is the first
-category built this way after light cones and relic sets, and is a useful
-reference for the next one:
+category built this way after light cones and relic sets — fully scraped,
+paraphrased, and live (430 entries, one per numbered story across ~86
+characters) — and is a useful reference for the next one:
 - Its wiki structure needed a genuinely new extractor —
   `ingest/wikitext_utils.py`'s `extract_template_params` — because a
   character's numbered stories live in one `{{Character Story|text1=...
@@ -159,22 +165,64 @@ reference for the next one:
   `name` includes the story index (`"<Character> — Story <N>"`) since
   `build_dataset.py` merges by `(category, normalized name)` — several
   same-named entries would silently collide.
-- `MAX_REASONABLE_FLAVOR_CHARS` in the new scraper is a starting guess
-  from a 5-character spot check, not a full-scrape calibration like the
-  other two categories' — expect it to need raising (see those two
-  scrapers' own comments for how that calibration was done last time).
-- Scraping all ~86 characters × ~4-5 stories (roughly 300-400 entries, on
-  top of the existing 228) hasn't been run yet — only spot-checked against
-  a handful of characters — pending the `robots.txt` check above given
-  it'd be the largest scrape by far.
+- `MAX_REASONABLE_FLAVOR_CHARS` was recalibrated from a 5-character spot
+  check (2000) to a full 86-character scrape (5000, real max ~4479) —
+  same calibration process as the other two scrapers, see their own
+  comments for the pattern.
 
-Fixing `extract_template_params` also surfaced a real, separate bug:
-`clean_flavor_text` wasn't stripping `{{Rubi|base|ruby}}` (a ruby/furigana
--style gloss), which had leaked into the *live* dataset's `raw_text` for
-two already-shipped relic-set entries. Fixed and backfilled directly into
-the affected raw_cache entries (not just the scraper) — a reminder that a
-markup-stripping bug can sit unnoticed in already-published `raw_text`
-since it's not validated as strictly as `short_text` is.
+**Building a page-URL string is centralized in `ingest/wiki_client.py`'s
+`page_url()`** — don't hand-roll `"https://.../wiki/" + title.replace(" ",
+"_")` in a new scraper. It exists because a handful of real page titles
+(alternate-outfit character variants like `Himeko • Nova`) contain
+non-ASCII characters that need percent-encoding to produce a well-formed
+URL; the naive version silently produced a broken link for exactly those
+pages.
+
+**`clean_flavor_text` strips more wiki templates than the obvious
+bold/link/`{{w|}}` markup**, all found by actually hitting parsing edge
+cases across the full dataset rather than guessing up front:
+`{{Rubi|base|ruby}}`, `{{MC|m=|f=}}`/`{{MC|pos1|pos2}}` (Trailblazer
+gender branches — both a named and a positional invocation style exist),
+`{{Obfuscate|N}}` (redacted-text markers — N is sometimes a digit,
+sometimes a placeholder like `-` or `----`), `{{sic|text}}`/`{{sic|text
+|hide=1}}`/bare `{{sic}}`, `{{Color|...}}` (whose *argument order varies
+between pages* — the actual text isn't always in the same position
+relative to the `keyword`/`nobold=1` parts, so it's extracted by splitting
+on top-level `|` and discarding known non-content parts rather than a
+fixed-position regex), `{{ja|...}}`/`{{zh|...}}` (dropped entirely — a
+non-English aside, not part of the narrative), and `{{Character Page
+Link|Name|ref=1}}`. If a future scrape (a new category, or a wiki edit)
+surfaces raw `{{...}}` markup in `raw_text`, check
+`ingest/wikitext_utils.py`'s test file first for the pattern this session
+already handled before assuming it's new. When one of these is fixed,
+the existing gitignored `raw_cache/*_wiki_raw.json` files are stale until
+re-scraped (cache-hit, cheap) — and the corresponding
+`*_paraphrased_full.json`'s `raw_text` needs the fresh value merged in
+(by `id`) before `pipeline/paraphrase.py`'s normal hash-mismatch check
+will pick up and reprocess just the entries that actually changed.
+
+**A local model can silently revert to Chinese/Japanese/Korean mid
+-paraphrase** — a real failure observed in production on an *already-
+shipped* light-cone entry (`Chorus`'s `short_text` was almost entirely
+Chinese on the live site until this was caught). `pipeline/validate.py`'s
+`possible_untranslated_text` check (a CJK/Hiragana/Katakana/Hangul
+Unicode-range scan) catches this now; it didn't exist before, so anything
+paraphrased earlier was never checked for it — worth a
+`--revalidate` pass after pulling this fix if you're ever unsure.
+
+**Manually clearing a `qa_flags` entry does not survive a future
+`--revalidate` run.** `--revalidate` recomputes every entry's
+validate-owned flags from scratch from its current `short_text`/`raw_text`
+— it has no notion of "a human already reviewed and approved this
+specific flag as a false positive." If you hand-clear
+`possible_hallucinated_name` on an entry because you've checked it's fine,
+and later run `--revalidate` for an unrelated reason (e.g. picking up a
+heuristic improvement), that entry's flag will silently reappear and need
+re-clearing. This happened mid-session: 9 entries manually cleared for one
+reason got wiped by a later `--revalidate` for a different reason, and had
+to be re-verified and re-cleared. There's currently no schema field that
+records "human-approved" separately from the automated `qa_flags` — worth
+keeping in mind rather than being surprised by it again.
 
 **Hard project constraints** (see `docs/PLANNING.md` for the full
 reasoning): zero cost — no paid APIs or hosting; wiki is the primary and

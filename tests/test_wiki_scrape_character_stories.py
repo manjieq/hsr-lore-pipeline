@@ -21,7 +21,7 @@ LORE_WIKITEXT = (
     "|text1    = A story about [[Elio]] and the Stellaron Hunters.\n"
     "|mention1 = Elio\n"
     "\n"
-    "|text2    = A second, much longer story. " + ("Filler text. " * 200) + "\n"
+    "|text2    = A second, much longer story. " + ("Filler text. " * 400) + "\n"
     "|mention2 = \n"
     "}}\n"
 )

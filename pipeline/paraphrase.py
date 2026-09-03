@@ -66,6 +66,7 @@ VALIDATE_OWNED_FLAGS = (
     "short_text_identical_to_raw",
     "possible_refusal_artifact",
     "possible_hallucinated_name",
+    "possible_untranslated_text",
 )
 
 

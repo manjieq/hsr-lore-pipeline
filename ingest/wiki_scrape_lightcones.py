@@ -19,7 +19,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from ingest.wiki_client import get_category_members, get_page_wikitext
+from ingest.wiki_client import get_category_members, get_page_wikitext, page_url
 from ingest.wikitext_utils import clean_flavor_text, extract_infobox_field, extract_template_arg
 
 CATEGORY = "Category:Light Cones"
@@ -59,7 +59,7 @@ def scrape_one(title: str, refresh: bool) -> dict | None:
             "name": title,
             "subtitle": "Light Cone",
             "source_type": "wiki",
-            "source_url": "https://honkai-star-rail.fandom.com/wiki/" + title.replace(" ", "_"),
+            "source_url": page_url(title),
             "raw_text": "",
             "image_url": None,
             "game_version_seen": None,
@@ -91,7 +91,7 @@ def scrape_one(title: str, refresh: bool) -> dict | None:
         "name": title,
         "subtitle": subtitle,
         "source_type": "wiki",
-        "source_url": "https://honkai-star-rail.fandom.com/wiki/" + title.replace(" ", "_"),
+        "source_url": page_url(title),
         "raw_text": flavor,
         "image_url": None,
         "game_version_seen": None,

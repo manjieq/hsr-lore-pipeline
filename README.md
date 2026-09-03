@@ -24,7 +24,7 @@ see [`LICENSE`](LICENSE).
 
 ## Status
 
-The full light cone and relic set catalogs (228 entries total) are live,
-scraped from the wiki and paraphrased locally via Ollama
-(`qwen2.5:7b-instruct`) — all 228 have passed the automated QA checks and
+The light cone, relic set, and character story catalogs (658 entries
+total) are live, scraped from the wiki and paraphrased locally via Ollama
+(`qwen2.5:7b-instruct`) — all 658 have passed the automated QA checks and
 human review. See the phases in `docs/PLANNING.md` for what's next.

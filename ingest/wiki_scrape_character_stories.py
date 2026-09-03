@@ -33,20 +33,20 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from ingest.wiki_client import get_category_members, get_page_wikitext
+from ingest.wiki_client import get_category_members, get_page_wikitext, page_url
 from ingest.wikitext_utils import clean_flavor_text, extract_template_params
 
 CATEGORY = "Category:Playable Characters"
 OUT_PATH = Path(__file__).resolve().parent.parent / "data" / "raw_cache" / "characterstories_wiki_raw.json"
 
-# A per-story sanity ceiling, in the same spirit as the light-cone and
-# relic-set scrapers' MAX_REASONABLE_FLAVOR_CHARS: a starting guess (a
-# single character story looked comparable in length to a single light
-# cone description in spot-checks, e.g. Kafka's 5 stories ran ~300-950
-# raw chars each) rather than a value calibrated against a full scrape of
-# all ~86 characters. Expect this to need raising after the first full
-# run, exactly as happened for the other two categories.
-MAX_REASONABLE_FLAVOR_CHARS = 2000
+# A per-story sanity ceiling, not a truncation policy -- same spirit as the
+# light-cone and relic-set scrapers' MAX_REASONABLE_FLAVOR_CHARS. Originally
+# set to 2000 from a 5-character spot check; a full scrape of all 86
+# characters (430 stories) showed that's too low for a lot of real entries
+# (median ~1587 chars, real max ~4479), so this was raised well above the
+# observed real max to stop flagging genuine content, matching how the
+# other two categories' ceilings were calibrated.
+MAX_REASONABLE_FLAVOR_CHARS = 5000
 
 # Highest story index to look for per character. HSR characters have had
 # up to 5-6 numbered stories as of this writing; scanning a bit past that
@@ -63,10 +63,6 @@ def slugify(name: str, index: int) -> str:
     slug = name.lower()
     slug = re.sub(r"[^a-z0-9]+", "-", slug).strip("-")
     return f"character-story-{slug}-{index}"
-
-
-def lore_page_url(character_name: str) -> str:
-    return "https://honkai-star-rail.fandom.com/wiki/" + character_name.replace(" ", "_") + "/Lore"
 
 
 def scrape_one(character_name: str, refresh: bool) -> list[dict]:
@@ -88,7 +84,7 @@ def scrape_one(character_name: str, refresh: bool) -> list[dict]:
         return []
 
     total = len(story_indices)
-    source_url = lore_page_url(character_name)
+    source_url = page_url(f"{character_name}/Lore")
     entries = []
     for position, index in enumerate(story_indices, 1):
         flavor = clean_flavor_text(params[f"text{index}"])

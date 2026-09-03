@@ -12,9 +12,11 @@ import json
 import random
 import time
 from pathlib import Path
+from urllib.parse import quote
 
 import requests
 
+WIKI_BASE_URL = "https://honkai-star-rail.fandom.com/wiki/"
 API_URL = "https://honkai-star-rail.fandom.com/api.php"
 USER_AGENT = (
     "hsr-lore-pipeline/0.1 "
@@ -22,6 +24,21 @@ USER_AGENT = (
 )
 CACHE_DIR = Path(__file__).resolve().parent.parent / "data" / "raw_cache" / "wiki"
 MIN_DELAY_SECONDS = 1.0
+
+# Characters MediaWiki itself leaves unencoded in page-URL paths (colons,
+# parens, etc. are common in real titles, e.g. "Talia: Kingdom of Banditry",
+# and read better unencoded); anything else -- crucially, non-ASCII
+# characters like the "•" in some alternate-outfit page titles (e.g.
+# "Himeko • Nova") -- gets percent-encoded so the URL is well-formed.
+_URL_SAFE_CHARS = "/:()',!&"
+
+
+def page_url(title: str) -> str:
+    """Build a wiki page URL from a page title, matching MediaWiki's own
+    convention of spaces-as-underscores plus percent-encoding anything that
+    isn't a normal title character. Use this instead of hand-rolling
+    "title.replace(' ', '_')" so non-ASCII titles produce a valid URL."""
+    return WIKI_BASE_URL + quote(title.replace(" ", "_"), safe=_URL_SAFE_CHARS)
 
 _session = requests.Session()
 _session.headers.update({"User-Agent": USER_AGENT})

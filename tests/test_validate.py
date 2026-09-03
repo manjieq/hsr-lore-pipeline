@@ -62,3 +62,40 @@ def test_genuinely_invented_name_is_still_flagged():
     raw_text = "A hero once lived quietly in the valley."
     short_text = "Then Zylorath the Undying arrived to claim the throne."
     assert "possible_hallucinated_name" in validate_short_text(short_text, raw_text, "A Quiet Hero")
+
+
+def test_plural_in_source_matches_singular_in_short_text():
+    # HSR's own faction/group names are very often plural ("Cloud
+    # Knights", "Stellaron Hunters", "Silvermane Guards") -- a paraphrase
+    # referring to a single member singular shouldn't be flagged.
+    raw_text = "She joined the Cloud Knights to escape her old life."
+    short_text = "She became a Cloud Knight to leave her old life behind."
+    assert "possible_hallucinated_name" not in validate_short_text(short_text, raw_text, "A Knight's Tale")
+
+
+def test_singular_in_source_matches_plural_in_short_text():
+    raw_text = "She joined the Cloud Knight academy to escape her old life."
+    short_text = "She trained among the Cloud Knights to leave her old life behind."
+    assert "possible_hallucinated_name" not in validate_short_text(short_text, raw_text, "A Knight's Tale")
+
+
+def test_possessive_wrapped_in_a_stylistic_quote_still_matches():
+    # A paraphrase styled as 'Sparxie's' (possessive apostrophe immediately
+    # followed by a closing stylistic quote) gets tokenized with a
+    # trailing "'s'" rather than a clean "'s" -- must still normalize down
+    # to match the bare name.
+    raw_text = "The mysterious figure known only as Sparxie posts daily."
+    short_text = "In 'Sparxie's' game, everyone dons the mask."
+    assert "possible_hallucinated_name" not in validate_short_text(short_text, raw_text, "Sparxie")
+
+
+def test_untranslated_non_latin_text_is_flagged():
+    short_text = "A diary reveals the代价 of a prophet's warnings to the innocent."
+    raw_text = "A diary reveals the price of a prophet's warnings to the innocent."
+    assert "possible_untranslated_text" in validate_short_text(short_text, raw_text, "A Diary")
+
+
+def test_pure_english_text_is_not_flagged_as_untranslated():
+    short_text = "A diary reveals the price of a prophet's warnings to the innocent."
+    raw_text = short_text
+    assert "possible_untranslated_text" not in validate_short_text(short_text, "some other raw text", "A Diary")

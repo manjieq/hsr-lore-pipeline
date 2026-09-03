@@ -117,6 +117,40 @@ def extract_section(wikitext: str, heading_name: str) -> str | None:
     return wikitext[content_start:content_end].strip()
 
 
+def _strip_color_template(text: str) -> str:
+    """Replace {{Color|...}} templates with just their actual displayed
+    text, dropping the "keyword" color-name literal and any "nobold=N"
+    flag. Real usage on this wiki puts the actual text in different
+    positions relative to those two -- e.g.
+    {{Color|keyword|"quoted text"|nobold=1}} vs.
+    {{Color|keyword|nobold=1|Some Text}} -- so this can't be a
+    fixed-position regex; it splits on top-level "|" the same way
+    extract_template_params does and keeps whichever part isn't the
+    "keyword" literal or a "key=value" flag."""
+
+    def replace(match: re.Match) -> str:
+        parts = _split_template_params(match.group(1))
+        kept = [p.strip() for p in parts if p.strip() != "keyword" and not re.match(r"^\w+\s*=", p.strip())]
+        return kept[0] if kept else ""
+
+    return re.sub(r"\{\{Color\|(.*?)\}\}", replace, text, flags=re.DOTALL)
+
+
+def _strip_sic_template(text: str) -> str:
+    """Replace {{sic|text}} (a [sic]-style "written thus in the original"
+    marker) with just its wrapped text -- except {{sic|text|hide=1}},
+    which marks the text as meant to not be shown at all, and is dropped
+    entirely rather than unwrapped."""
+
+    def replace(match: re.Match) -> str:
+        parts = _split_template_params(match.group(1))
+        if any(re.match(r"^\s*hide\s*=\s*1\s*$", p) for p in parts[1:]):
+            return ""
+        return parts[0].strip() if parts else ""
+
+    return re.sub(r"\{\{[Ss]ic\|(.*?)\}\}", replace, text, flags=re.DOTALL)
+
+
 def clean_flavor_text(raw: str) -> str:
     """Strip common wiki markup out of an extracted flavor-text fragment."""
     text = raw
@@ -125,5 +159,32 @@ def clean_flavor_text(raw: str) -> str:
     text = re.sub(r"\[\[(?:[^|\]]*\|)?([^\]]+)\]\]", r"\1", text)  # [[link|label]] -> label
     text = re.sub(r"\{\{w\|(?:[^|}]*\|)?([^}]+)\}\}", r"\1", text)  # {{w|...|label}} -> label
     text = re.sub(r"\{\{Rubi\|([^|}]*)\|[^}]*\}\}", r"\1", text, flags=re.IGNORECASE)  # {{Rubi|base|ruby}} -> base
+    # {{MC|m=male text|f=female text}} (named) or {{MC|male text|female
+    # text}} (positional) -- Trailblazer's gender-conditional text, in
+    # either invocation style used across the wiki. The site has no
+    # per-reader gender selection, so this always picks the first/"m"
+    # variant; an arbitrary but consistent choice.
+    text = re.sub(r"\{\{MC\|m=([^|}]*)\|f=[^}]*\}\}", r"\1", text)  # named form
+    text = re.sub(r"\{\{MC\|([^|}]*)\|[^}]*\}\}", r"\1", text)  # positional form
+    # {{Obfuscate|N}} -- N deliberately-redacted characters in the
+    # original text (e.g. a name withheld for plot reasons). N is usually
+    # a digit but sometimes a placeholder like "-" or "----"; render as a
+    # single block character whenever it isn't a clean digit count rather
+    # than guessing a length from the placeholder's own length.
+    text = re.sub(
+        r"\{\{Obfuscate\|([^}]*)\}\}", lambda m: "▇" * (int(m.group(1)) if m.group(1).isdigit() else 1), text
+    )
+    text = _strip_sic_template(text)
+    text = re.sub(r"\{\{[Ss]ic\}\}", "", text)  # bare {{sic}} with no wrapped argument
+    text = _strip_color_template(text)
+    # {{Character Page Link|Name|ref=1}} -- an inline link to another
+    # character's page with an optional footnote-reference flag; keep
+    # just the name.
+    text = re.sub(r"\{\{Character Page Link\|([^|}]*)(?:\|ref=\d+)?\}\}", r"\1", text)
+    # {{ja|...}} / {{zh|...}} -- a Japanese/Chinese-language aside (e.g. an
+    # etymology note), not part of the English narrative; dropped entirely
+    # rather than left as raw non-Latin script for the paraphrase model to
+    # potentially echo verbatim into short_text.
+    text = re.sub(r"\{\{(?:ja|zh)\|[^}]*\}\}", "", text)
     text = re.sub(r"\s+", " ", text).strip()
     return text
