@@ -36,6 +36,21 @@ def extract_infobox_field(wikitext: str, field_name: str) -> str | None:
     return match.group(1).strip() if match else None
 
 
+def extract_section(wikitext: str, heading_name: str) -> str | None:
+    """Return the wikitext body of a level-2 ``==Heading==`` section, up to
+    (but not including) the next level-2 heading or end of page. A level-3+
+    subheading (``===...===``) inside the section is included as part of the
+    body, not treated as a stopping point. Returns None if the heading isn't
+    present at all."""
+    start_match = re.search(rf"^==\s*{re.escape(heading_name)}\s*==\s*$", wikitext, re.MULTILINE | re.IGNORECASE)
+    if not start_match:
+        return None
+    content_start = start_match.end()
+    next_heading_match = re.search(r"^==[^=].*==\s*$", wikitext[content_start:], re.MULTILINE)
+    content_end = content_start + next_heading_match.start() if next_heading_match else len(wikitext)
+    return wikitext[content_start:content_end].strip()
+
+
 def clean_flavor_text(raw: str) -> str:
     """Strip common wiki markup out of an extracted flavor-text fragment."""
     text = raw
