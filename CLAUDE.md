@@ -17,7 +17,10 @@ built, so don't assume everything in it reflects current reality).
 ## Commands
 
 Use the project's venv, not a bare system `python` — dependencies
-(`pytest`, `ollama`, `requests`, `selectolax`) live there:
+(`pytest`, `ollama`, `requests`, `selectolax`, versions pinned in
+`requirements.txt`) live there. `tests/test_daily_selection_parity.py` also
+needs `node` on PATH (it skips itself if missing; CI's `ubuntu-latest`
+already has it):
 
 ```
 .venv/Scripts/python.exe -m pytest                        # all tests
@@ -111,6 +114,25 @@ flag and needs an actual read against the source.
 cycle_length → index, skipping ineligible ids` logic against
 `daily_cycle.json`. **Any change to one must be mirrored exactly in the
 other** — there's no shared source of truth between Python and JS here.
+`tests/test_daily_selection_parity.py` runs both implementations (the JS
+side via a `node` subprocess, see `tests/_daily_selection_driver.js`) against
+the same inputs and fails if they ever disagree — a real safety net, but the
+two files still have to be edited in tandem by hand.
+
+**A single bad entry doesn't abort a whole scrape/paraphrase run.**
+`ingest/wiki_scrape_*.py` and `pipeline/paraphrase.py`'s `process_entries`
+each wrap their per-item work in try/except (recording a `scrape_error` /
+`paraphrase_error` qa_flag and moving on) and checkpoint their output to
+disk periodically instead of only writing once at the end. A failed item is
+retried automatically on the next run since its hash/short_text is left
+unset.
+
+**The wiki's `robots.txt` cannot be checked from a script or agent** — it's
+behind a Cloudflare challenge that returns a JS-challenge page (or a bare
+403) to any non-browser client, `curl` and `WebFetch` included. This is a
+platform fact, not a bug to work around; a real compliance check needs a
+human in an actual browser, which `docs/PLANNING.md` already flagged as a
+manual, one-time step before the first real scrape.
 
 **Adding a new lore category** (e.g. character stories, per
 `docs/PLANNING.md`'s future-work section) is meant to be additive: write a

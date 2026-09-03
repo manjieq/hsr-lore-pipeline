@@ -4,6 +4,7 @@
   let entries = [];
   let entriesById = new Map();
   let activeFilter = "all";
+  let searchQuery = "";
 
   function escapeHtml(str) {
     const div = document.createElement("div");
@@ -78,13 +79,29 @@
     grid.innerHTML = "";
     const params = new URLSearchParams(window.location.search);
     const deepLinkId = params.get("id");
+    const query = searchQuery.trim().toLowerCase();
 
     const visible = entries.filter(
-      (e) => e.reviewed && (activeFilter === "all" || e.category === activeFilter)
+      (e) =>
+        e.reviewed &&
+        (activeFilter === "all" || e.category === activeFilter) &&
+        (!query || e.name.toLowerCase().includes(query))
     );
+
+    if (visible.length === 0) {
+      grid.innerHTML = '<p class="card no-results">No entries match your search.</p>';
+      return;
+    }
     visible.forEach((entry) => {
       grid.appendChild(renderCard(entry, { expanded: entry.id === deepLinkId }));
     });
+  }
+
+  function renderLastUpdated() {
+    const footer = document.getElementById("last-updated");
+    if (!footer || entries.length === 0) return;
+    const latest = entries.reduce((max, e) => (e.date_updated > max ? e.date_updated : max), entries[0].date_updated);
+    footer.textContent = `Lore data last updated ${latest}.`;
   }
 
   async function init() {
@@ -100,6 +117,13 @@
     renderDaily(dailyId);
     renderFilterTabs();
     renderBrowse();
+    renderLastUpdated();
+
+    const searchInput = document.getElementById("search-input");
+    searchInput.addEventListener("input", () => {
+      searchQuery = searchInput.value;
+      renderBrowse();
+    });
 
     const params = new URLSearchParams(window.location.search);
     const deepLinkId = params.get("id");

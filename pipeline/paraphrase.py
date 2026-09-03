@@ -69,8 +69,22 @@ VALIDATE_OWNED_FLAGS = (
 )
 
 
-def process_entries(entries: list[dict], limit: int | None = None) -> list[dict]:
+def process_entries(
+    entries: list[dict],
+    limit: int | None = None,
+    checkpoint_path: Path | None = None,
+    checkpoint_every: int = 10,
+) -> list[dict]:
+    """Paraphrase every eligible entry. A single bad Ollama response
+    (malformed JSON, a missing key, a connection error) is caught and
+    recorded as a paraphrase_error qa_flag on that one entry rather than
+    aborting the whole run -- the entry's raw_text_hash is left unchanged,
+    so it's retried automatically on the next run. If checkpoint_path is
+    given, progress is written to disk every checkpoint_every successfully
+    -processed entries, so a crash or interrupt partway through a long run
+    doesn't discard everything paraphrased so far."""
     processed = 0
+    errors = 0
     for entry in entries:
         if limit is not None and processed >= limit:
             break
@@ -88,9 +102,20 @@ def process_entries(entries: list[dict], limit: int | None = None) -> list[dict]
         ):
             continue  # unchanged since last paraphrase run
 
-        short_text = paraphrase_one(entry["name"], entry["category"], entry["raw_text"])
+        try:
+            short_text = paraphrase_one(entry["name"], entry["category"], entry["raw_text"])
+        except Exception as exc:  # deliberately broad: any failure here should flag this
+            # one entry and move on, not abort every other entry's progress.
+            errors += 1
+            flags = list(entry.get("qa_flags") or [])
+            if "paraphrase_error" not in flags:
+                flags.append("paraphrase_error")
+            entry["qa_flags"] = flags
+            print(f"  ERROR paraphrasing {entry['name']}: {exc}", file=sys.stderr)
+            continue
+
         flags = list(entry.get("qa_flags") or [])
-        flags = [f for f in flags if f not in VALIDATE_OWNED_FLAGS]
+        flags = [f for f in flags if f not in VALIDATE_OWNED_FLAGS and f != "paraphrase_error"]
         flags.extend(validate_short_text(short_text, entry["raw_text"], entry["name"]))
 
         entry["short_text"] = short_text
@@ -100,7 +125,12 @@ def process_entries(entries: list[dict], limit: int | None = None) -> list[dict]
         processed += 1
         print(f"  paraphrased: {entry['name']} -> flags={flags}", file=sys.stderr)
 
-    print(f"Paraphrased {processed} entr{'y' if processed == 1 else 'ies'} this run.", file=sys.stderr)
+        if checkpoint_path is not None and processed % checkpoint_every == 0:
+            checkpoint_path.write_text(json.dumps(entries, ensure_ascii=False, indent=2), encoding="utf-8")
+            print(f"  ...checkpointed at {processed} processed -> {checkpoint_path}", file=sys.stderr)
+
+    summary = f"Paraphrased {processed} entr{'y' if processed == 1 else 'ies'} this run"
+    print(summary + (f" ({errors} error{'s' if errors != 1 else ''})." if errors else "."), file=sys.stderr)
     return entries
 
 
@@ -139,9 +169,14 @@ def main() -> None:
     )
     args = parser.parse_args()
 
+    output_path = Path(args.output_path)
     entries = json.loads(Path(args.input_path).read_text(encoding="utf-8"))
-    entries = revalidate_entries(entries) if args.revalidate else process_entries(entries, limit=args.limit)
-    Path(args.output_path).write_text(json.dumps(entries, ensure_ascii=False, indent=2), encoding="utf-8")
+    entries = (
+        revalidate_entries(entries)
+        if args.revalidate
+        else process_entries(entries, limit=args.limit, checkpoint_path=output_path)
+    )
+    output_path.write_text(json.dumps(entries, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
 if __name__ == "__main__":

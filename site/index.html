@@ -24,6 +24,13 @@
         <h2 class="section-label">Browse all</h2>
         <div id="filter-tabs" class="filter-tabs" role="tablist"></div>
       </div>
+      <input
+        type="search"
+        id="search-input"
+        class="search-input"
+        placeholder="Search by name…"
+        aria-label="Search all lore entries by name"
+      />
       <div id="browse-grid" class="card-grid"></div>
     </section>
   </main>
@@ -35,6 +42,7 @@
       claim authorship of any in-game text.
     </p>
     <p><a href="https://github.com/manjieq/hsr-lore-pipeline" target="_blank" rel="noopener">Source on GitHub</a></p>
+    <p id="last-updated" class="last-updated"></p>
   </footer>
 
   <script src="js/select-daily.js"></script>

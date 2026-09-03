@@ -35,6 +35,12 @@ OUT_PATH = Path(__file__).resolve().parent.parent / "data" / "raw_cache" / "ligh
 # above the observed real max (~2030 chars) to stop flagging genuine content.
 MAX_REASONABLE_FLAVOR_CHARS = 3000
 
+# Write partial progress to OUT_PATH every this many pages, so a crash or
+# interrupt partway through a long scrape doesn't discard everything fetched
+# so far (each page fetch is itself cached by wiki_client, but the raw_cache
+# *output list* was previously only written once, at the very end).
+CHECKPOINT_EVERY = 20
+
 
 def slugify(name: str) -> str:
     slug = name.lower()
@@ -104,18 +110,28 @@ def main() -> None:
     if args.limit:
         titles = titles[: args.limit]
 
+    OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     results = []
     flagged = []
+    errors = []
     for i, title in enumerate(titles, 1):
         print(f"[{i}/{len(titles)}] {title}", file=sys.stderr)
-        entry = scrape_one(title, refresh=args.refresh)
+        try:
+            entry = scrape_one(title, refresh=args.refresh)
+        except Exception as exc:  # a single malformed/missing page shouldn't lose the whole run
+            errors.append((title, str(exc)))
+            print(f"  ERROR scraping {title}: {exc}", file=sys.stderr)
+            continue
         if entry is None:
             continue
         results.append(entry)
         if entry.get("qa_flags"):
             flagged.append((title, entry["qa_flags"]))
 
-    OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
+        if i % CHECKPOINT_EVERY == 0:
+            OUT_PATH.write_text(json.dumps(results, ensure_ascii=False, indent=2), encoding="utf-8")
+            print(f"  ...checkpointed {len(results)} pages -> {OUT_PATH}", file=sys.stderr)
+
     OUT_PATH.write_text(json.dumps(results, ensure_ascii=False, indent=2), encoding="utf-8")
 
     print(f"\nScraped {len(results)} pages -> {OUT_PATH}", file=sys.stderr)
@@ -123,6 +139,10 @@ def main() -> None:
         print(f"{len(flagged)} page(s) flagged for review:", file=sys.stderr)
         for title, flags in flagged:
             print(f"  - {title}: {flags}", file=sys.stderr)
+    if errors:
+        print(f"{len(errors)} page(s) failed to scrape and were skipped (re-run to retry):", file=sys.stderr)
+        for title, err in errors:
+            print(f"  - {title}: {err}", file=sys.stderr)
 
 
 if __name__ == "__main__":

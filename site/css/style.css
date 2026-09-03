@@ -172,7 +172,28 @@ main {
   color: #fff;
 }
 
+.search-input {
+  display: block;
+  width: 100%;
+  margin: 0.75rem 0 1rem;
+  padding: 0.55rem 0.8rem;
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.search-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
 .card-grid { display: block; }
+
+.no-results { color: var(--text-muted); text-align: center; }
+
+.last-updated { margin-top: 0.4rem; }
 
 .site-footer {
   max-width: 720px;
