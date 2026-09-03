@@ -63,10 +63,8 @@
     "raw_text": "A young girl smiles subtly. \"How?\" \"Right here, right now, I am alone...\" \"But it feels... very lively.\"",
     "image_url": null,
     "game_version_seen": null,
-    "qa_flags": [
-      "possible_hallucinated_name"
-    ],
-    "reviewed": false,
+    "qa_flags": [],
+    "reviewed": true,
     "short_text": "A lone girl smiles as she whispers, 'Right here, right now, I am alone... but it feels very lively.'",
     "prompt_version": "paraphrase_v1",
     "raw_text_hash": "279bd485dfe32c49354bce4be4e935f8b43d995f473682f86e485affb023a7b6",
@@ -105,7 +103,7 @@
       "short_text_too_long"
     ],
     "reviewed": false,
-    "short_text": "Elias Salas' communication goggles failed to bridge geniuses' social gap, while Stephen Lloyd's job-slacking gloves let him research stringed instruments undetected. Sserkal's metafield space let creatures connect virtually, and Dr. Primitive used gravity-capture tech to evade pursuers across the cosmos.",
+    "short_text": "Elias Salas's communication goggles and Stephen Lloyd's job-slacking gloves show how geniuses find creative solutions to mundane issues, only to face resistance. Sserkal's metafield space offers a virtual sanctuary, while Dr. Primitive's gravity-capture tech lets him evade pursuers across the cosmos.",
     "prompt_version": "paraphrase_v1",
     "raw_text_hash": "86bbef2557dbb40af3909ebf21e11fe8b28aa088b972079d581b755e43f1c29f",
     "date_added": "2026-09-03",
@@ -355,10 +353,8 @@
     "raw_text": "Flowing in the narrow border between “existence” and “nothingness”, the ice-cold tides eternally lap against the shores and bring all things to their final end. In this place, the drowned ask for help, lament with songs, find their happiness, enjoy sweet moments, and suffer great agony… All these are reflected in the water. She cannot experience these, but she can feel them– There are still many roads to walk, many sounds to listen to, and many things to change before she arrives at the end. She reaches out and saves the drowning from the temptations of Nihility, and one mirage after another bursts apart behind her figure. She keeps walking in this boundless world, all for an end that does not exist. – And it’s always raining here.",
     "image_url": null,
     "game_version_seen": null,
-    "qa_flags": [
-      "possible_hallucinated_name"
-    ],
-    "reviewed": false,
+    "qa_flags": [],
+    "reviewed": true,
     "short_text": "In a liminal realm where ice meets nothingness, a figure walks on forever, saving the drowning from Nihilistic mirages, all while the rain never stops.",
     "prompt_version": "paraphrase_v1",
     "raw_text_hash": "c2cc03729fbfca5e7c3e834312f38ab871e043ef1fdee4957284b63ad852d67b",
@@ -645,10 +641,8 @@
     "raw_text": "\"Why couldn't Hook do a spinning dance move, just like how Clara does?\" She clenched her tiny fists and pouted her cute lips, her chubby little face looking redder than ever under her signature felt hat. \"Please, Mr. Svarog, can you please help Hook with this?\" Without saying any words, Mr. Svarog began to hold out his robotic arm. \"I'm g&mdash;gonna be sick!!! Put me down now! Please!\"",
     "image_url": null,
     "game_version_seen": null,
-    "qa_flags": [
-      "possible_hallucinated_name"
-    ],
-    "reviewed": false,
+    "qa_flags": [],
+    "reviewed": true,
     "short_text": "Hook begs Mr. Svarog for help with a spinning dance move, only to be gripped by motion sickness as Svarog obliges.",
     "prompt_version": "paraphrase_v1",
     "raw_text_hash": "fde622d58037b3269b2586fd1e9fd64377384da662a5ecc3f8915539628776eb",
@@ -1223,10 +1217,8 @@
     "raw_text": "\"Pitiful, laughable slaves...\" The Denizens of Abundance's legions come crashing upon the border like an avalanche, with Lupitoxin rushing toward the Verdant Knights like a tide, trying to arouse the deep-set fear hidden in the soldiers' hearts. Illusions of dread came forth, striking the wills of the warriors, compelling them to drop their blades and be seized by hesitation. But the front remains stalwart like a bronze wall, unstirred by the borisins' disdainful words. From among the soldiers, a single figure saunters forth. She moves her body at a slow pace, and the flags behind her rustle under the unseen killing intent. \"The general... it's the general...\" \"General Feixiao...\" \"The Merlin's Claw!\" These small cheers and calls then come together into a thunderous battle cry. \"Always soaring! Forever triumphant!\" She stands there, alone. A single figure, but imbued with the might of an entire army.",
     "image_url": null,
     "game_version_seen": null,
-    "qa_flags": [
-      "possible_hallucinated_name"
-    ],
-    "reviewed": false,
+    "qa_flags": [],
+    "reviewed": true,
     "short_text": "As the general steps forward, soldiers hesitate under illusions of fear, but her slow, resolute movement rallies them into a thunderous battle cry: 'Always soaring! Forever triumphant! '",
     "prompt_version": "paraphrase_v1",
     "raw_text_hash": "233d7bbf1b23ffade4dde73545eea97e5752ec282112edf6d2d1078a75e2f6c8",
@@ -1333,10 +1325,8 @@
     "raw_text": "With the final card revealed, despondency, rage, helplessness, calm... Thousands of emotions immediately emerge from the faces of his opponents. \"Since we're already here, why don't we make everything more exciting?\" He puts in all his chips. Those who have accepted their losses leave the table while muttering curses, secretly hoping that he would lose. Victories, reputation, luck... He had never cared for any of that. He's only drunk on the moment that makes his very life quiver &mdash;Hell is only one decision away from heaven. The chips are cast as lamentations ring out, dissipating in an instant when the dust finally settles, just like this illusory sense of satisfaction. \"To have everything, or to lose everything, yet I have no power to choose...\"",
     "image_url": null,
     "game_version_seen": null,
-    "qa_flags": [
-      "possible_hallucinated_name"
-    ],
-    "reviewed": false,
+    "qa_flags": [],
+    "reviewed": true,
     "short_text": "As the final card is revealed, a gambler's emotions run wild, betting everything on a moment that could mean losing it all, reflecting: 'To have everything or lose everything, yet I have no power to choose.'",
     "prompt_version": "paraphrase_v1",
     "raw_text_hash": "4162390cf2ef8f1055c41d97bb50482f8f76f949f15d91578e76a4f65a1c83c7",
@@ -1713,10 +1703,8 @@
     "raw_text": "\"Come, come to me...\" A vivid memory, guided by flames, envelops her body and soul. The bygone days had fallen into the grave, is that true? \"Hush, don't weep, don't resist...\" She brands herself onto others' hearts, as strange gazes gradually turn familiar. \"Do you remember now?\" As the embers of old memories scatter away, her face carries a trace of intoxicating floral fragrance... \"I am your memory.\"",
     "image_url": null,
     "game_version_seen": null,
-    "qa_flags": [
-      "possible_hallucinated_name"
-    ],
-    "reviewed": false,
+    "qa_flags": [],
+    "reviewed": true,
     "short_text": "In a haunting memory, a figure uses flames to reconnect lost souls, whispering, 'Do you remember now?'",
     "prompt_version": "paraphrase_v1",
     "raw_text_hash": "738ec01a9a1c12d817ba354954a3093137fe19a9743c079bff0475354b9c2490",
@@ -1931,11 +1919,9 @@
     "raw_text": "A drop of strength condensed from time itself. All the seemingly insignificant moments come together to form the magnificent choir of fate. \"We will no longer fight alone. The IPC will stand alongside everyone in assistance.\"",
     "image_url": null,
     "game_version_seen": null,
-    "qa_flags": [
-      "possible_hallucinated_name"
-    ],
-    "reviewed": false,
-    "short_text": "Pioneering brings together the power of countless small moments, promising that the Interplanetary Coalition will stand with all, never fighting alone again.",
+    "qa_flags": [],
+    "reviewed": true,
+    "short_text": "A relic of time unites the IPC, promising to stand with all in a chorus of fate, ending solitary battles forever.",
     "prompt_version": "paraphrase_v1",
     "raw_text_hash": "5e2e2c3ec448660e2028f8092a3c8f4119b80540e126467224fd659f006c7c5c",
     "date_added": "2026-09-03",
@@ -2815,10 +2801,8 @@
     "raw_text": "A grand gift swoops down into the livestream. \"It's a specially customized third anniversary cake from the fans for everyone!\" Every cherished memory becomes a driving force in this moment, pulling everyone together toward the future. \"May everyone move forward happily and safely in the new year!\" \"Don't worry, conductor! March Bunny will capture this moment~\" In the heartwarming atmosphere, everyone raises their glasses together, laughter and joy filling every corner. \"On this day worth celebrating, let us raise our glasses.\" \"To the star-filled tomorrow&mdash;\" \"Cheers!\"",
     "image_url": null,
     "game_version_seen": null,
-    "qa_flags": [
-      "possible_hallucinated_name"
-    ],
-    "reviewed": false,
+    "qa_flags": [],
+    "reviewed": true,
     "short_text": "A fan-customized anniversary cake brings the team together, raising glasses to a brighter future as they toast 'To the star-filled tomorrow'",
     "prompt_version": "paraphrase_v1",
     "raw_text_hash": "605a8248e8cfd828dc94eeebf09da89b33722bcd562deea6a0719047a7f8c391",
@@ -2835,10 +2819,8 @@
     "raw_text": "The planet is receiving a revaluation... \"Will this project show that it's mutually beneficial to collect any outstanding debts?\" \"But we only need to convey one message &mdash; our existence.\" \"If it were to have a value of its own, then it must create value for the corporation.\"",
     "image_url": null,
     "game_version_seen": null,
-    "qa_flags": [
-      "possible_hallucinated_name"
-    ],
-    "reviewed": false,
+    "qa_flags": [],
+    "reviewed": true,
     "short_text": "A planet's revaluation sparks a debate: Will collecting debts prove mutually beneficial, or is the true goal to simply exist and generate value for the corporation?",
     "prompt_version": "paraphrase_v1",
     "raw_text_hash": "92fa1512cbadafded255e9334e639a68b3ace5ccd2cb8451421ba9af433b026c",
@@ -3053,10 +3035,8 @@
     "raw_text": "This is the edge of the Asdana system. The ocean of memoria roars with mountainous waves and she, like a singular tiny spark, may be doused at any moment in the storm. \"For one who cannot dream to enter the Synesthesia Dreamscape, they would have to pay a price comparable to death.\" She can still hear her companions' concerned voices next to her ears. She takes a deep breath and dives into the Memory Zone. As the vessel silently sinks into the depth of the Memory Zone, small pinpricks of firefly lights dissipate from the cracks and are then immediately swallowed up by the endless darkness. \"Wherefore do you hurtle unto death?\" In the ocean of memoria that grows deeper and deeper, the weak light emitted by the Memory Zone creatures are like faraway eyes that nonchalantly glance at her. Dreams remained too distant for her. She gazes emptily out at the boundless darkness, her body and soul having reached the breakdown threshold long ago under the heavy pressure of memoria. Though she realizes her consciousness is gradually fading, only those remaining memories are playing over and over in her brain &mdash; The Swarm that covered the sky tore through the frontline defenses as she flew towards the Swarm while enveloped in fire. The charred ash of the Swarm faded like snow, under which lies the pitch-black carcasses of the knights. She didn't even have the time to take a bouquet and offer her final acknowledgement to knights, who were dying one after another. Their lives bloomed in the blink of an eye and went out equally fleetingly. Like a string of genetic code, they never possessed names and only had numbers allotted instead. \"Wherefore do you live?\" In the deathly silence, like flames dissolving in the sea, she is reduced to a singular spot of fire and unendingly progresses towards the light... She opens her eyes after what seems to be forever. She sees the \"future\" looking like a pearl, radiating with a soft and vague light. Tears stream down her face &mdash; \"I do it to find... my own 'dream'...\"",
     "image_url": null,
     "game_version_seen": null,
-    "qa_flags": [
-      "possible_hallucinated_name"
-    ],
-    "reviewed": false,
+    "qa_flags": [],
+    "reviewed": true,
     "short_text": "In the Asdana system's stormy memoria, a dreamer faces her fate, haunted by the question: 'Wherefore do you hurtle unto death?'",
     "prompt_version": "paraphrase_v1",
     "raw_text_hash": "9170d7f8ef50977ad3916142d29886da69374af96e8d97736eff9873e8f50218",
@@ -3505,10 +3485,8 @@
     "raw_text": "Thalesus, the First Scholar, embarked on his journey around Amphoreus from his coastal home city, Mileutus, at his age of majority, seeking spiritual meaning within the Mnestia faith. Along the way, his strange experiences and new visions reshaped his thoughts on nature and the origin of the world. At the journey's end, he met the Bough of Rift and completed his philosophical methods to experience the world before the great tree. Under the giant tree, Thalesus established a courtyard and named it the Grove of Epiphany, a place for people to awaken their spirits, seek wisdom, and grasp the way. The thoughts of {{Rubi|Cerces|Reason Titan}} became so enhanced that they became written scrolls or quietly turned into the whispering flora of the grove... The noise of the Grove was born from there. From these debates and intellectual exchanges, new schools of thought emerged. Although differentiated from one another, the schools were interwoven &mdash; much like the overlaying branches of the giant tree... Through centuries of argument and scholarly heritage, the First Scholar's insights have evolved into the Seven Sages and seven primary schools of thought, as well as many different viewpoints. \"All knowledge of the world should become the leaves of the Grove, to shield the sun and help the giant tree flourish.\" Every city-state seeking wisdom from the Grove must offer equal knowledge in return. Thus, countless ideas are nourished, and countless new leaves sprout. For centuries, should any scrolls containing knowledge be found on trade caravans passing through the Grove's narrow passage or ships arriving at the port, they would become a part of the Grove's library regardless of the scroll's nationality or language. The scholars, or rather, \"bandits,\" transformed the Grove into Amphoreus' best school by ways of spending incomprehensible amounts of wealth on knowledge, hiring copywriters to steal knowledge, or even outright robbery of knowledge. The scholars of the Grove used questions as sacrificial vassals and thoughts as reverence, and bowed their heads at the supreme reason in this world. Beginning with the planting of life, returning to the spirit of the wood, the Grove collects all knowledge that flows to it from the world. {{Rubi|Cerces|Reason Titan}} listened to the growing noise of the Grove, and never spoke. Each thought of the Grove of Epiphany is like a branch on the giant tree. The veins form hundreds of viewpoints, expanding like an intricate web of young boughs. Though independent, they intertwine, ultimately forming the thriving canopy of the great tree. One branch pointed its leaf stalk toward itself, twisting in intricate coils. The Ascetics of Lotophagism were captivated by the very patterns of the tree's leaves and flowers, believing that all life and even the cosmos were visible, tangible realities. Their practice was not merely asceticism for its own sake, but a method of harmonizing all things &mdash; seeing asceticism not as the denial of self, but as a direct path to understanding it. Another branch bore heavy fruit, filling the boughs. Scholars of Caprism specialized in the study, breeding, and preservation of animals. The many forms of the chimeras, both pitiful and beautiful, were their small but meaningful experiment to understanding the vast diversity of life. One branch twisted into a perfect proportion, precise and elegant. The scholars of Nodism asserted that \"all things are numbers,\" believing everything could be mapped mathematically. As one of the earliest schools to form in the Grove, they imposed strict standards, proclaiming \"No scholar who is ignorant of geometry may enter\" and regarded mathematics as the very means by which {{Rubi|Cerces|Reason Titan}} governs the world. Another branch grew thick and resilient, sturdy and enduring. Helkolithism required the scholars to prove their discipline by swinging a sling before admission, casting stones beyond a specific range. This was a test to demonstrate their commitment to \"perfectionism\" in thought, physical rigor, and competitive spirit. One branch alternated between drooping and standing tall, transmitting an exquisite beauty to the senses. The Erythrokeramists view art and sensibility as the core of logical thinking, believing that the rawest and most refined knowledge comes from direct sensory experience, leading to a more enlightened and profound understanding of the world. High above, in the lush treetop, one branch devoted and worshipful stood closest to the heart of the giant tree. This branch was the most suited for ritual. The Venerationists excelled in the understanding of Titan ceremonies and the deployment of divine miracles, earning the nickname \"The Cradle of Amphoreus' Politicians.\" They not only governed the Grove's sacred rites but also influenced the very fabric of Amphoreus' politics. However, there was a new and sharp young shoot, rising in opposition... The Nousporist inherited the First Scholar's teachings on the soul, and specialized in the transformation and ascension of life and matter. It was the youngest school, yet with the most cutting-edge arguments, focused on tracing the origins of all life and material existence. The Seven Sages of the Seven Schools each presided over their respective fields of study, with no hierarchy among them. The towering giant tree of reason, the symbolic head of the Seven Sages, spread knowledge and reason like branches, scattering them across the world amid endless debates and intellectual discourse.",
     "image_url": null,
     "game_version_seen": null,
-    "qa_flags": [
-      "possible_hallucinated_name"
-    ],
-    "reviewed": false,
+    "qa_flags": [],
+    "reviewed": true,
     "short_text": "Thalesus planted the Grove of Epiphany, where seven schools of thought flourished, each represented by a branch of the giant tree, from the ascetic Lotophagists to the mathematical Nodists, fostering endless debates and knowledge exchange in Amphoreus.",
     "prompt_version": "paraphrase_v1",
     "raw_text_hash": "663276ce21590ed390c85f4b9212335da33917deca89784092d86d8758411449",
@@ -3669,11 +3647,9 @@
     "raw_text": "To avoid the private forces hired by the financial magnates, messengers in the Capital of Passion usually travel in the skies above the city, where security forces are scarce. They like to turn on pulse-scanning and look over the entire cyber city while chewing cheap gum and donning heavily modified holovisors. The holovisors project real-time information of the city directly onto the messenger's retina, turning impossible routes into an aerial path for the messengers: Building rooftops, air conditioning units, billboards, the arms of cranes... even unmanned logistics drones can become part of the path. Therefore, messengers must be skilled enough, as even one misstep would result in an unexpected and lethal fall. \"Some fool jammed all the holovisors indiscriminately while I was in the air! That crash was the worst I've ever had.\" This Yellow Ducky holovisor is a discontinued old model that is said to be of considerable value among enthusiasts. Not all messengers have cybernetic prosthetic arms, but those who do often have a strong passion to modify it. After all, no one wants to have a cybernetic limb that looks identical to everyone else's. The residents of the Capital of Passion are obsessed with cybernetic prosthetics, while the city's limited regulations can only advise against the frenzy of excessive body modification. The registered standards for modifications in the Capital of Passion only contains three categories, with a total of eighteen types. This is clearly not enough for the rebellious messengers. They invest huge amounts of their salaries into imaginative designs. They create blueprints that enable their electronic conversion machinery to release lightning or transform their prosthetic hands into missiles, and the designs become increasingly outrageous as fees to engage messengers skyrocket. \"Are these messengers running to protect information, or are they running to earn exorbitant fees?\" This Yellow Ducky prosthetic arm has undergone special modifications, with each finger joint able to rotate at high speeds and be launched like a bullet. Financial magnates in the Capital of Passion monitor all information flow in the city. They are used to maintaining their dominance using information monopoly, and all who try to subvert this control will be punished by the Public Security Regulation. People once protested, which only made the financial magnates dish out some convenient compromises. Soon enough, people gave up on the idea of \"privacy.\" The financial magnates greedily collect every piece of information whether it is important or trivial, or whether it arose from reality or virtual realms. As a result, the messengers' courier satchels have become the final bastion of privacy. The satchel is small, lightweight, and can only carry chips or documents. Despite these shortcomings, the final remains of \"information independence\" in the Capital of Passion was solely ensured by these tiny blind spots. \"Why do people still transmit information outside of the internet in the prosperous Capital of Passion? The messengers also want to know the answer.\" This limited edition Yellow Ducky courier satchel may be a bit old, but its various accessories make it still in fashion. The former Capital of Passion messengers all throw their sneakers into one spot, and leaves after a brief moment of silence. Most messengers wouldn't leave their name or even a trace in this city, making their behavior nothing but a self-indulgent coda. Even messengers can't pinpoint when the \"nature of being a messenger\" had changed to make them the people they hated the most. Insidiously, the \"information independence\" that messengers protected became a monopoly. Insidiously, the risks that messengers faced became a bargaining chip. Insidiously, messengers became the accomplices of conspirators... The financial magnates did not destroy the messengers &mdash; It was their immature ideas that betrayed them. The messengers assemble before everything totally spirals out of control, and bid a last farewell to their hurried lives. \"Perhaps this should be the end for the messengers. Perhaps we should let everyone see the truth of this city, and let the true reformists take action.\" These are a pair of Yellow Ducky sneakers abandoned on the side of the road. The messengers of the Capital of Passion have long become a legend of the past.",
     "image_url": null,
     "game_version_seen": null,
-    "qa_flags": [
-      "short_text_too_long"
-    ],
-    "reviewed": false,
-    "short_text": "In the Capital of Passion, messengers navigate the city's rooftops and air conditioning units, dodging security while using modified holovisors to find impossible routes. Their cybernetic arms, designed with lightning and missile capabilities, reflect the city's obsession with body modification. Despite the financial magnates' control, messengers' courier satchels remain the last bastion of privacy.",
+    "qa_flags": [],
+    "reviewed": true,
+    "short_text": "In the Capital of Passion, messengers navigate the city's rooftops and air conditioning units, dodging security while wearing modified holovisors and cybernetic arms, all to protect the last remnants of privacy in a world dominated by financial magnates.",
     "prompt_version": "paraphrase_v1",
     "raw_text_hash": "5e24bc76c6b40f8ae00184adea572747d5b1c8848c5d76e15430fa026e9d4954",
     "date_added": "2026-09-03",
@@ -3797,11 +3773,9 @@
     "raw_text": "Thanks to technologies from the Genius Society, Punklorde's monopolistic capital built an information industry that far surpasses the interstellar average. The Internet of Everything, Consciousness Uploading, Virtual Life... Roam the Overworld of Punklorde, and you'll witness a neon paradise of the mortal world: Roaring vehicles tearing down the lanes, converging streams of light weaving through the air, and bustling entertainment centers gorging on extravagant desires and insatiable greed. However, if you look down from above, Punklorde is nothing but a desolate, run-down sprawl. Mountains of electronic scrap and compacted trash litter the landscape. Middlemen, black market dealers, gang members... people prowl the mean streets like wild beasts. There's no shortage of epic legends here, or absurd tales. So much so that hackers' legend claim the Aeon of Elation was once drawn to this place, personally adding THEIR own twisted flavor of fun to Punklorde's rebellion. Those seeking to reach the pinnacle of Punklorde found their inspiration and compressed their lives into data within Aether Cartridges. With the birth of hackers, the game known as \"Punklorde\" began. If you put on the goggles of a hacker and look at this world anew, you'll see drab curtain walls layered with graffiti, every crack potentially concealing folded space, and cursors that suddenly appear in dark alleys turn out to be directions or traps left by those who came before. In this world of information built from 0 and 1, hackers believe that life is a game, where they challenge the authority, mock the false, create things that exist only in imagination, and tirelessly explore their limits, until the day they \"beat the game.\" The Interastral Peace Corporation once tried to acquire Punklorde, but an unprecedented attack on the Interastral Network forced the IPC to abandon the plan. In the years that followed, no fewer than ten cosmic powers attempted to swallow up Punklorde, but all of them returned empty-handed. To this day, Punklorde remains a free zone in the cosmos. Even in spaces so cramped people can barely move, countless souls still yearn to break free from their shackles. They wander through the world of information, hoping to travel toward the heights of Rainbow City and the universe beyond the stars. Just as Masks define the Masked Fools, Aether Cartridges are what make hackers, hackers. Massive amounts of virtual currency, entertainment disguised as ordinary files, programs loaded with classified intel, a single command capable of bringing down the entire global network... By plugging in Aether Cartridges, hackers risk being swallowed by the torrents as they navigate through data channels. In the game of Punklorde, a hacker's cartridge level determines how far they can go. For most hackers, their journey ends at the limits of their own talent. For those rare few known as \"legends,\" their names will remain forever on the Hacker Guild's leaderboard... \"Zero\" triggered the first data meltdown, \"Sage\" pioneered aether editing technology, \"Stoneblade\" was remembered for his heroic defiance of the Oasis Zone... But if you scroll from bottom to top, the name at the very top is an indelible piece of graffiti: Silver Wolf pulling a funny face. No one knows why an orphan from Mount Scrap skyrocketed to fame overnight, or why she \"gifted\" her graffiti to the Hacker Guild before vanishing without a trace one day. Coming and going freely through the \"Dark Zone\" created by Mythus, engaging in cyber warfare with the genius of Planet Screwllum... Rumors both true and false still circulate. Legend has it she touched the very peak of Elation, yet for some reason never uses that power. Yet even legends must take their final bow. At the end of the game, hackers eject their cartridges, wipe their data clean, and embrace the GAME OVER screen. Back in the day, Punklorde hackers liked to call that final moment Lv. 99. But how much would it be now?",
     "image_url": null,
     "game_version_seen": null,
-    "qa_flags": [
-      "short_text_too_long"
-    ],
-    "reviewed": false,
-    "short_text": "In Punklorde, hackers navigate a neon paradise of excess and decay, leaving graffiti and traps as they challenge authority. The mysterious Silver Wolf, a legend among legends, left her mark before vanishing, leaving hackers to wonder about her untapped potential and the true meaning of the final Lv. 99 moment.",
+    "qa_flags": [],
+    "reviewed": true,
+    "short_text": "Punklorde's neon paradise hides a desolate wasteland, where hackers risk everything in the name of freedom, leaving their legends etched in Aether Cartridges as they chase the ultimate high.",
     "prompt_version": "paraphrase_v1",
     "raw_text_hash": "db062ac1f1724d32cab93fe278a4121313597cd11b9a5397c5d92a1829f7a0ee",
     "date_added": "2026-09-03",
@@ -3871,11 +3845,9 @@
     "raw_text": "[ID] EVD-W019EI06-003 [Name] Crystal monocle [Key Feature] Displays evident fractures [Location] Bohdan laboratory in the Energy Research Lab, Ohioti Central Academy of Sciences [Individual Involved] Bohdan, the Chief Scientist in the energy analysis field and member No. #7 of the Genius Society. [Site Analysis] The traces on the site indicate that the subject inadvertently triggered a reaction while operating the observation device, leading to Phlogiston leakage from the vessel and severe injury to the subject's left hand. During the incident, the monocle fell from a height and was fractured. [Supplementary Testimony] Bohdan mentioned abnormal visual light emissions in the monocle during experimentation, resulting in a series of coincidences that eventually led to the Phlogiston leak. The testimony was deemed inadmissible due to an excessive number of coincidences mentioned by the witness. [Additional Information] Suspected as a premeditated criminal act. However, the cascading coincidences creating the Butterfly Effect did not constitute a reproducible criminal method, therefore this event was ultimately classified as an accident. [Recording] \"...This accident is actually a blessing in disguise, because it sent Lambda back to me again. Actually, this is our fourth remarriage... and it's a bit embarrassing to say, but this is MY first proposal for a remarriage.\" Sourced from Bohdan. [ID] EVD-X024DE18-002 [Name] Finger exoskeleton infused with Grayseal Gold alloy [Key Feature] Displays signs of external damage. Confirmed to have been damaged before the explosion [Location] Central control room, polar energy excavation site [Individual Involved] Lambda (deceased), the best scientist in bio-wave detection science and member No. #8 of the Genius Society. [Site Analysis] Surveillance footage indicates the subject's improper operation led to a volatile explosion in the central control room, which immediately killed the subject. [Supplementary Testimony] \"God knows what secrets she's been hiding, but if anything happens to her, Klein definitely has something in it!\" Two weeks prior to the explosion, Bohdan filed a report, stating that a thug had harmed his wife's disabled right hand. However, Lambda, the actual victim, declined further investigation and withdrew the case. [Additional Information] After the explosion, the subject's husband requested to retrieve the exoskeleton along with the subject's finger bones once the investigation was over. Given the string of incredible coincidences in this incident, this case is recommended for high priority. [Recording] \"Come to me, Klein! We've got to settle this score! Both you and I know well there are no such things as 'coincidences' in this world, let alone this unbelievable string of them.\"Sourced from the security system in Klein's house. [ID] EVD-X043FE21-001 [Name] Tweed jacket, coarse spun wool vest, and white shirt [Key Feature] Displays an 8-centimeter Phlogiston burn mark on the left chest [Location] Bohdan laboratory in the Energy Research Lab, Ohioti Central Academy of Sciences [Individual Involved] Bohdan (Deceased), the best scientist in the energy analysis field and member No. #7 of the Genius Society. [Site Analysis] The traces on the site indicate that the Grayseal Gold pellets carried by the subject absorbed a substantial amount of Phlogiston, resulting in a temperature spike of nearly 1,000 degrees Celsius near the subject's heart, leaving burn marks on the jacket, vest, and shirt. Half of an unburnt finger bone was found in the burnt area, identified as originating from Lambda or related to the high-purity Grayseal Gold pellets. [Supplementary Testimony] \"...We should have been more caring about him, especially considering he never truly let go of his wife's death...\" According to other scholars at the lab, Bohdan, who devised the safety manual specifications, should not have made such a \"simple mistake.\" [Additional Information] Grayseal Gold is a rare alloy developed by Klein, member No. #9 of the Genius Society, known for its ability to absorb and store Phlogiston. When a series of coincidences pile up, does that still count as a coincidence? [Relevant Document] \"It is strictly forbidden to bring high-purity Grayseal Gold alloy products into laboratories with Phlogiston observation areas.\" Excerpted from the Energy Research Laboratory Safety Manual. [ID] EVD-X031JA12-004 [Name] Women's snow boots for polar expeditions [Key Feature] Displays evident signs of wear and repair, with a hidden disk in the sole. Possibilities of espionage have been preliminarily ruled out [Location] Basement of Klein's House [Individual Involved] Klein (deceased), the best scientist in alloy material science and member No. #9 of the Genius Society. [Site Analysis] A huge number of items belonging to the late scientist Lambda were found in Klein's home, including the these boots. [Supplementary Testimony] \"Maybe I was wrong about him... I mean, Klein. As for my late wife, Lambda... She's been away from me for a long while, and I just feel... unfamiliar about her.\" Bohdan was unaware of his wife's belongings in Klein's home but displayed no visible surprise upon discovery. [Additional Information] Klein's residence is located in a remote area with no visitors around the time of death as determined by the coroner. The preliminary diagnosis is accidental death. Bohdan, Lambda, and Klein shared a unique relationship and the series of \"coincidences\" they experienced border on supernatural phenomena. [Recording] \"*Sigh* I know you doubt me, Bohdan, and I know I can't prove my innocence to you. I'm very sorry for what happened to Lambda. I feel guilty, but I'm the last one who would ever deliberately harm her... In fact, I have some leads about the murderer's identity. Have you ever heard of the Lord of Silence?... *noise*\" Sourced from the disk hidden in the boots.",
     "image_url": null,
     "game_version_seen": null,
-    "qa_flags": [
-      "possible_hallucinated_name"
-    ],
-    "reviewed": false,
-    "short_text": "Bohdan's lab accident, Lambda's mysterious death, and Klein's hidden secrets—all intertwined by a web of coincidences and suspicions in Honkai: Star Rail.",
+    "qa_flags": [],
+    "reviewed": true,
+    "short_text": "Bohdan's lab accident, Lambda's mysterious death, and Klein's hidden secrets all hint at a web of coincidences that might not be so coincidental after all.",
     "prompt_version": "paraphrase_v1",
     "raw_text_hash": "46dfec992d68c12ea44a02c11d316ac74879e92d2694c0a6cf1d5a4f0822dbf8",
     "date_added": "2026-09-03",

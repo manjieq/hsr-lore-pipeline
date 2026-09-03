@@ -32,14 +32,33 @@ def _strip_possessive(word: str) -> str:
     return word
 
 
+
+# Title abbreviations end in "." without ending the sentence -- without this,
+# "Mr. Svarog" reads as "Mr." (sentence end) + "Svarog" (sentence-initial),
+# wrongly excluding "Svarog" from the known-source-noun set.
+_ABBREVIATIONS = {"mr", "mrs", "ms", "dr", "st", "jr", "sr", "prof"}
+
+
 def _is_sentence_initial(text: str, start: int) -> bool:
     """True if the token starting at `start` opens a sentence: either it's
     the very first thing in `text`, or the nearest preceding non-space,
-    non-quote/paren character is sentence-ending punctuation."""
+    non-quote/paren character is sentence-ending punctuation that isn't
+    itself the end of a title abbreviation like "Mr."."""
     j = start - 1
     while j >= 0 and text[j] in " \t\n\"'“”‘’()":
         j -= 1
-    return j < 0 or text[j] in ".!?"
+    if j < 0:
+        return True
+    if text[j] not in ".!?":
+        return False
+    if text[j] == ".":
+        word_end = j
+        word_start = word_end
+        while word_start > 0 and text[word_start - 1].isalpha():
+            word_start -= 1
+        if text[word_start:word_end].lower() in _ABBREVIATIONS:
+            return False
+    return True
 
 
 def _proper_nouns(text: str, *, skip_sentence_initial: bool) -> set[str]:

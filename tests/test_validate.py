@@ -50,6 +50,14 @@ def test_bare_noun_in_source_matches_possessive_in_short_text():
     assert "possible_hallucinated_name" not in validate_short_text(short_text, raw_text, "Space Sealing Station")
 
 
+def test_title_abbreviation_period_does_not_start_a_new_sentence():
+    # "Mr." ends in "." without ending the sentence -- "Svarog" must still
+    # count as a known source noun both times it follows "Mr.".
+    raw_text = '"Please, Mr. Svarog, can you help?" Without a word, Mr. Svarog complied.'
+    short_text = "Hook begs Mr. Svarog for help, and Svarog obliges without a word."
+    assert "possible_hallucinated_name" not in validate_short_text(short_text, raw_text, "Dance! Dance! Dance!")
+
+
 def test_genuinely_invented_name_is_still_flagged():
     raw_text = "A hero once lived quietly in the valley."
     short_text = "Then Zylorath the Undying arrived to claim the throne."

@@ -17,6 +17,9 @@ excerpt rather than reproduced in full. All game text, names, and imagery
 belong to COGNOSPHERE / HoYoverse — this project is not affiliated with or
 endorsed by them, and is not monetized.
 
+The pipeline and site code (everything else in this repo) is MIT-licensed;
+see [`LICENSE`](LICENSE).
+
 ## Status
 
 The full light cone and relic set catalogs (228 entries total) are now live,
