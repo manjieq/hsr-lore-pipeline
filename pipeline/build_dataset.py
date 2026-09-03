@@ -50,6 +50,7 @@ CYCLE_PATH = REPO_ROOT / "site" / "data" / "daily_cycle.json"
 # category -> path to that category's paraphrased raw_cache output.
 CATEGORY_SOURCES = {
     "light_cone": REPO_ROOT / "data" / "raw_cache" / "lightcones_paraphrased_full.json",
+    "relic_set": REPO_ROOT / "data" / "raw_cache" / "relicsets_paraphrased_full.json",
 }
 
 

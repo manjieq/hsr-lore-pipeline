@@ -19,8 +19,8 @@ endorsed by them, and is not monetized.
 
 ## Status
 
-The full light cone catalog (168 entries) is now live, scraped from the wiki
-and paraphrased locally via Ollama (`qwen2.5:7b-instruct`); 19 entries are
-held back pending human review of an automated faithfulness flag. Relic sets
-are still the original 5 hand-authored samples — see the phases in
-`docs/PLANNING.md` for what's next.
+The full light cone and relic set catalogs (228 entries total) are now live,
+scraped from the wiki and paraphrased locally via Ollama
+(`qwen2.5:7b-instruct`); 39 entries are held back pending human review of an
+automated faithfulness flag. See the phases in `docs/PLANNING.md` for what's
+next.
