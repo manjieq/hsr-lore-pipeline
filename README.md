@@ -55,9 +55,9 @@ python -m venv .venv
 .venv/bin/python -m pipeline.entities         # rebuild just the entity graph
 ```
 
-`build_dataset.py` is the only thing that writes the three committed data
-files the site reads: `entries.json` (the corpus), `entities.json` (the
-connection graph and its daily rotation), and `daily_cycle.json`.
+`build_dataset.py` is the only thing that writes the two committed data
+files the site reads: `entries.json` (the corpus) and `entities.json` (the
+connection graph and its daily rotation).
 
 The site is static HTML/CSS/vanilla JS with no build step — open
 `site/index.html` directly, or serve the folder:

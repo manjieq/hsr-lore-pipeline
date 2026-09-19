@@ -1,6 +1,6 @@
-"""Orchestrates ingest -> paraphrase -> validate output into the single
-canonical dataset the site reads: site/data/entries.json (+ an extended
-site/data/daily_cycle.json).
+"""Orchestrates ingest -> paraphrase -> validate output into the datasets
+the site reads: site/data/entries.json (the corpus) and
+site/data/entities.json (the connection graph built over it).
 
 This does NOT run the scraper or call Ollama itself -- those are separate,
 slower steps (see ingest/wiki_scrape_*.py and pipeline/paraphrase.py) whose
@@ -16,9 +16,10 @@ merging that raw_cache output into the live dataset:
   with an empty wiki description) are left out of the dataset entirely
   rather than included as a blank card.
 - reviewed is set automatically: true for entries with a short_text and no
-  qa_flags, false otherwise -- flagged entries stay out of the site (both
-  rotation and browse-all, per site/js/app.js) until a human clears the
-  flag and re-runs this script. This auto-approve policy was a deliberate
+  qa_flags, false otherwise -- flagged entries stay out of the site
+  entirely (pipeline/entities.py's is_eligible drops them before the
+  connection graph is built) until a human clears the flag and re-runs
+  this script. This auto-approve policy was a deliberate
   call, not the default; a project with lower quality bar or higher trust
   requirements might want a stricter human-review-every-entry gate instead.
 - date_added is preserved for entries that already existed (matched by
@@ -42,11 +43,9 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from pipeline.entities import build_entities_file
-from pipeline.select_daily import build_or_extend_cycle
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 ENTRIES_PATH = REPO_ROOT / "site" / "data" / "entries.json"
-CYCLE_PATH = REPO_ROOT / "site" / "data" / "daily_cycle.json"
 ENTITIES_PATH = REPO_ROOT / "site" / "data" / "entities.json"
 
 # category -> path to that category's paraphrased raw_cache output.
@@ -116,14 +115,9 @@ def main() -> None:
     print(f"\nWrote {len(merged)} total entries -> {ENTRIES_PATH}", file=sys.stderr)
     print(f"Totals: {total_stats}", file=sys.stderr)
 
-    existing_cycle = json.loads(CYCLE_PATH.read_text(encoding="utf-8")) if CYCLE_PATH.exists() else None
-    cycle_data = build_or_extend_cycle(merged, existing_cycle)
-    CYCLE_PATH.write_text(json.dumps(cycle_data, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"Cycle now has {len(cycle_data['cycle'])} eligible entries -> {CYCLE_PATH}", file=sys.stderr)
-
     # The entity graph is derived purely from the merged entries, so it is
-    # rebuilt from scratch every run rather than extended -- unlike the
-    # daily cycle, nothing about it needs to stay stable across builds.
+    # rebuilt from scratch every run rather than extended: nothing about it
+    # needs to stay stable across builds.
     entities_data = build_entities_file(merged)
     ENTITIES_PATH.write_text(json.dumps(entities_data, ensure_ascii=False, indent=2), encoding="utf-8")
     bridging = sum(1 for e in entities_data["entities"] if e["category_span"] >= 2)

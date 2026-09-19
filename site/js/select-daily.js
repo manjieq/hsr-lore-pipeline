@@ -1,19 +1,15 @@
-// Deterministic "one per calendar day" pickers for the site.
+// Picks the one connection featured on a given calendar day (UTC).
 //
-// selectDailyId (entries) is shared logic with pipeline/select_daily.py and
-// any change to it must be mirrored there exactly -- see the note in that
-// file; tests/test_daily_selection_parity.py runs both against the same
-// inputs and fails if they disagree.
-//
-// selectDailyConnectionId (entities) has no Python counterpart on purpose.
-// Python owns the *order* of the connection rotation (a seeded shuffle
-// written into site/data/entities.json by pipeline/entities.py) and the
-// browser owns only the day indexing, so there is no duplicated algorithm
-// here to keep in sync.
+// There is deliberately no Python counterpart to keep in sync. Python owns
+// the *order* of the rotation -- a seeded shuffle written into
+// site/data/entities.json by pipeline/entities.py -- and the browser owns
+// only the day indexing. An earlier design duplicated a whole selection
+// algorithm across pipeline/select_daily.py and this file, which needed an
+// automated parity test to stop the two drifting; splitting the
+// responsibilities removed the duplication instead of policing it.
 
-// Days elapsed from a cycle's start date to today, folded into a valid
-// index. Extracted so both pickers share one definition of "what day is it"
-// rather than growing a second, subtly different copy.
+// Days elapsed from the cycle's start date to today, folded into a valid
+// index.
 function cycleIndexForToday(cycleStartDate, todayUTC, length) {
   const start = new Date(cycleStartDate + "T00:00:00Z");
   const today = todayUTC || new Date();
@@ -29,28 +25,10 @@ function cycleIndexForToday(cycleStartDate, todayUTC, length) {
   return ((daysSinceStart % length) + length) % length;
 }
 
-function selectDailyId(cycleData, entriesById, todayUTC) {
-  const cycle = cycleData.cycle;
-  if (!cycle || cycle.length === 0) return null;
-
-  const len = cycle.length;
-  let index = cycleIndexForToday(cycleData.cycle_start_date, todayUTC, len);
-
-  for (let tries = 0; tries < len; tries++) {
-    const id = cycle[index];
-    const entry = entriesById.get(id);
-    if (entry && entry.reviewed && (!entry.qa_flags || entry.qa_flags.length === 0)) {
-      return id;
-    }
-    index = (index + 1) % len;
-  }
-  return null;
-}
-
-// Today's featured connection. Unlike entries, an entity has no
-// reviewed/qa_flags notion -- pipeline/entities.py already applied the
-// eligibility rules (spans more than one category, clears the reach floor)
-// when it built the cycle, so anything in the list is showable.
+// pipeline/entities.py already applied the eligibility rules when it built
+// the cycle (spans more than one category, clears the reach floor, built
+// only from entries that passed QA), so anything still in the list is
+// showable.
 function selectDailyConnectionId(cycleData, entitiesById, todayUTC) {
   const cycle = cycleData && cycleData.cycle;
   if (!cycle || cycle.length === 0) return null;
@@ -70,5 +48,5 @@ function selectDailyConnectionId(cycleData, entitiesById, todayUTC) {
 }
 
 if (typeof module !== "undefined") {
-  module.exports = { selectDailyId, selectDailyConnectionId, cycleIndexForToday };
+  module.exports = { selectDailyConnectionId, cycleIndexForToday };
 }

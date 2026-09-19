@@ -51,9 +51,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 # Reused rather than reimplemented. This is the same "does this capital
 # letter mean a proper noun, or just the start of a sentence?" problem
 # validate.py already solved (including the "Mr."-isn't-a-sentence-end
-# case), and the repo has already been bitten once by keeping two copies of
-# one algorithm in sync (see select_daily.py / select-daily.js). Importing
-# the private helper is the lesser evil against duplicating it.
+# case). Importing the private helper is the lesser evil against keeping a
+# second copy of one algorithm in sync by hand.
 from pipeline.validate import _is_sentence_initial
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -348,9 +347,22 @@ def resolve_surface(
     return key, surface, "term"
 
 
+def is_eligible(entry: dict) -> bool:
+    """Whether an entry may appear on the site at all.
+
+    Same gate build_dataset.py applies when it sets `reviewed`: a flagged
+    entry stays out until a human clears the flag. The graph has to honour
+    it too -- without this an entry held back by QA would still surface as
+    evidence under some connection, quietly routing around the review step
+    the whole pipeline is built on."""
+    return bool(entry.get("reviewed")) and not entry.get("qa_flags")
+
+
 def build_entity_index(entries: list[dict]) -> list[dict]:
     """Entity nodes with the entries that mention them, most-connected
-    first. Only entities meeting MIN_ENTRY_MENTIONS survive."""
+    first. Only entities meeting MIN_ENTRY_MENTIONS survive, and only
+    entries clearing is_eligible() are considered at all."""
+    entries = [e for e in entries if is_eligible(e)]
     gazetteer = build_character_gazetteer(entries)
     alias_keys = {_canonical_key(k): v for k, v in _ALIASES.items()}
     # Pass 1: establish which one-word names the corpus can vouch for,
@@ -412,9 +424,9 @@ def build_entity_index(entries: list[dict]) -> list[dict]:
     return entities
 
 
-# Fixed seed, same rationale as select_daily.py's: the rotation only needs
-# to look arbitrary, not be unpredictable, and a fixed seed keeps the order
-# reproducible across machines and runs.
+# Fixed seed: the rotation only needs to look arbitrary, not be
+# unpredictable, and a fixed seed keeps the order reproducible across
+# machines and runs.
 CONNECTION_SHUFFLE_SEED = "hsr-lore-pipeline-connection-cycle-v1"
 
 # Reach required to headline the "today's connection" slot. Two entries in
@@ -434,10 +446,10 @@ def build_connection_cycle(entities: list[dict], start_date: str | None = None) 
     turns out to share a name with a relic set and someone's backstory is
     the reason this feature exists.
 
-    Unlike daily_cycle.json this is rebuilt wholesale each run rather than
-    extended. There is no published-history property to preserve here --
-    the entity set is derived, not curated -- so stability across rebuilds
-    costs more than it is worth."""
+    Rebuilt wholesale each run rather than extended. There is no
+    published-history property to preserve here -- the entity set is
+    derived, not curated -- so stability across rebuilds would cost more
+    than it is worth."""
     eligible = [
         e["id"]
         for e in entities

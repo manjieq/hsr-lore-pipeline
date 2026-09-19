@@ -38,9 +38,8 @@ already has it):
 ```
 .venv/Scripts/python.exe -m pytest                        # all tests
 .venv/Scripts/python.exe -m pytest tests/test_validate.py -k some_test  # one test
-.venv/Scripts/python.exe -m pipeline.build_dataset         # merge raw_cache -> site/data/{entries,daily_cycle,entities}.json
+.venv/Scripts/python.exe -m pipeline.build_dataset         # merge raw_cache -> site/data/{entries,entities}.json
 .venv/Scripts/python.exe -m pipeline.entities             # rebuild only the entity graph from entries.json
-.venv/Scripts/python.exe -m pipeline.select_daily [--fresh]
 .venv/Scripts/python.exe -m pipeline.paraphrase <in.json> <out.json> [--limit N] [--revalidate]
 python ingest/wiki_scrape_lightcones.py [--limit N] [--refresh]
 python ingest/wiki_scrape_relicsets.py [--limit N] [--refresh]
@@ -62,10 +61,11 @@ that touch `site/**`.
 
 ## Architecture
 
-**Pipeline (local, run manually) → one committed dataset → static site.**
+**Pipeline (local, run manually) → committed datasets → static site.**
 Nothing in `site/` talks to a backend; `pipeline/build_dataset.py` is the
-only thing that writes `site/data/entries.json` and
-`site/data/daily_cycle.json`, and the site just fetches those two files.
+only thing that writes `site/data/entries.json` (the corpus) and
+`site/data/entities.json` (the connection graph plus its daily rotation),
+and the site just fetches those two files.
 
 Data flows through three stages, each gated by a hash/version check so
 re-runs are cheap:
@@ -86,8 +86,8 @@ re-runs are cheap:
    via its own `slugify()`, which can drift from an earlier id for the same
    real item. It also (re)computes `reviewed` for every entry (`True` iff
    `short_text` is present and `qa_flags` is empty) and calls
-   `pipeline/select_daily.py`'s `build_or_extend_cycle` to update
-   `daily_cycle.json`.
+   `pipeline/entities.py`'s `build_entities_file` to rebuild
+   `entities.json`.
 
 **The entity graph (`pipeline/entities.py`) is the site's primary
 content**, and is built from `entries.json` alone — it needs no raw_cache
@@ -117,14 +117,6 @@ corpus, all of which have regression tests in `tests/test_entities.py`:
   and `said, "Look` reads as mid-sentence. Evidence therefore requires a
   preceding lowercase word character, in `MIN_EVIDENCE_ENTRIES` separate
   entries.
-
-**The entry-level daily rotation is now orphaned.** `daily_cycle.json`,
-`pipeline/select_daily.py`, `selectDailyId` in `site/js/select-daily.js`,
-and their parity test are all still built, shipped and passing, but the
-page stopped reading them when the hero became a connection — that rotates
-via `connection_cycle` inside `entities.json`, which Python orders and the
-browser only indexes by day. Retiring the old rotation is a live decision,
-not an oversight.
 
 **`reviewed` is never hand-edited in the JSON.** It's a pure function of
 `qa_flags`, recomputed by `build_dataset.py` on every run. To "approve" a
@@ -163,17 +155,19 @@ wrong acronym expansion or a fourth-wall break (e.g. paraphrase naming the
 game itself, which `prompts/paraphrase_v1.txt` explicitly forbids) won't
 trip any automated flag and needs an actual read against the source.
 
-**The daily-selection algorithm is intentionally duplicated** in
-`pipeline/select_daily.py` (Python, used by `build_dataset.py` and by
-`tests/test_select_daily.py`) and `site/js/select-daily.js` (JS, used by
-`site/js/app.js`). Both implement the same `days_since_start mod
-cycle_length → index, skipping ineligible ids` logic against
-`daily_cycle.json`. **Any change to one must be mirrored exactly in the
-other** — there's no shared source of truth between Python and JS here.
-`tests/test_daily_selection_parity.py` runs both implementations (the JS
-side via a `node` subprocess, see `tests/_daily_selection_driver.js`) against
-the same inputs and fails if they ever disagree — a real safety net, but the
-two files still have to be edited in tandem by hand.
+**There is no longer a duplicated selection algorithm.** The project
+used to run the same `days_since_start mod cycle_length → index` logic in
+both `pipeline/select_daily.py` and `site/js/select-daily.js`, kept honest
+by an automated parity test. When the daily hero became a connection, that
+whole apparatus was retired (`select_daily.py`, `daily_cycle.json`,
+`tests/test_select_daily.py`, `tests/test_daily_selection_parity.py`,
+`tests/_daily_selection_driver.js` are all gone — see git history if you
+need them). Responsibilities are now split rather than mirrored: Python
+orders the rotation (a seeded shuffle written as `connection_cycle` inside
+`entities.json`) and the browser only indexes into it by day. **If you ever
+need selection logic on both sides again, split the responsibility rather
+than duplicating the algorithm** — that is what removed the need to police
+drift.
 
 **A single bad entry doesn't abort a whole scrape/paraphrase run.**
 `ingest/wiki_scrape_*.py` and `pipeline/paraphrase.py`'s `process_entries`

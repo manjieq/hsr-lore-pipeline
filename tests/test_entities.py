@@ -28,7 +28,17 @@ from pipeline.entities import (
 
 
 def entry(entry_id, category, name, raw_text):
-    return {"id": entry_id, "category": category, "name": name, "raw_text": raw_text}
+    """A normal, review-passing entry -- the shape all 658 real entries
+    have. Tests that care about the review gate set reviewed/qa_flags
+    explicitly on top of this."""
+    return {
+        "id": entry_id,
+        "category": category,
+        "name": name,
+        "raw_text": raw_text,
+        "reviewed": True,
+        "qa_flags": [],
+    }
 
 
 # --- canonicalization -------------------------------------------------
@@ -279,7 +289,7 @@ def test_build_entities_file_shape():
 
 def test_entries_missing_raw_text_do_not_crash():
     entries = [
-        {"id": "a", "category": "light_cone", "name": "One"},
+        {"id": "a", "category": "light_cone", "name": "One", "reviewed": True},
         entry("b", "relic_set", "Two", "The Cloud Knights fell."),
     ]
     assert build_entity_index(entries) == []
@@ -358,3 +368,24 @@ def test_connection_cycle_is_deterministic():
     assert first == second
     # ...and actually shuffled, not left in input order.
     assert first != [e["id"] for e in entities]
+
+
+def test_flagged_entries_are_excluded_from_the_graph():
+    """The graph must honour the same review gate build_dataset.py applies
+    when setting `reviewed`. Without it a QA-flagged entry would still
+    surface as evidence under some connection, routing around the human
+    review step the pipeline depends on."""
+    clean = entry("a", "light_cone", "One", "The Cloud Knights rose.")
+    clean["reviewed"] = True
+    flagged = entry("b", "relic_set", "Two", "The Cloud Knights fell.")
+    flagged["reviewed"] = True
+    flagged["qa_flags"] = ["possible_hallucinated_name"]
+    unreviewed = entry("c", "character_story", "X — Story 1", "The Cloud Knights held.")
+    unreviewed["reviewed"] = False
+
+    # Only one eligible entry remains, so nothing connects.
+    assert build_entity_index([clean, flagged, unreviewed]) == []
+
+    flagged["qa_flags"] = []
+    found = {e["name"]: e for e in build_entity_index([clean, flagged, unreviewed])}
+    assert found["Cloud Knights"]["entry_ids"] == ["a", "b"]
