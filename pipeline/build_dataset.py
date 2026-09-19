@@ -41,11 +41,13 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from pipeline.entities import build_entities_file
 from pipeline.select_daily import build_or_extend_cycle
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 ENTRIES_PATH = REPO_ROOT / "site" / "data" / "entries.json"
 CYCLE_PATH = REPO_ROOT / "site" / "data" / "daily_cycle.json"
+ENTITIES_PATH = REPO_ROOT / "site" / "data" / "entities.json"
 
 # category -> path to that category's paraphrased raw_cache output.
 CATEGORY_SOURCES = {
@@ -118,6 +120,18 @@ def main() -> None:
     cycle_data = build_or_extend_cycle(merged, existing_cycle)
     CYCLE_PATH.write_text(json.dumps(cycle_data, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"Cycle now has {len(cycle_data['cycle'])} eligible entries -> {CYCLE_PATH}", file=sys.stderr)
+
+    # The entity graph is derived purely from the merged entries, so it is
+    # rebuilt from scratch every run rather than extended -- unlike the
+    # daily cycle, nothing about it needs to stay stable across builds.
+    entities_data = build_entities_file(merged)
+    ENTITIES_PATH.write_text(json.dumps(entities_data, ensure_ascii=False, indent=2), encoding="utf-8")
+    bridging = sum(1 for e in entities_data["entities"] if e["category_span"] >= 2)
+    print(
+        f"Entity graph: {entities_data['entity_count']} entities "
+        f"({bridging} spanning >1 category) -> {ENTITIES_PATH}",
+        file=sys.stderr,
+    )
 
 
 if __name__ == "__main__":

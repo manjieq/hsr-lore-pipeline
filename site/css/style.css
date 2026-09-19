@@ -87,7 +87,6 @@ main {
   padding: 0.2rem 0.55rem;
   border-radius: 999px;
   color: #fff;
-  margin-bottom: 0.5rem;
 }
 .card-badge.light_cone { background: var(--badge-lc); }
 .card-badge.relic_set { background: var(--badge-rs); }
@@ -97,17 +96,6 @@ main {
   font-size: 1.15rem;
   font-weight: 700;
   margin: 0 0 0.15rem;
-}
-
-.card-subtitle {
-  font-size: 0.82rem;
-  color: var(--text-muted);
-  margin: 0 0 0.6rem;
-}
-
-.card-short {
-  margin: 0 0 0.7rem;
-  font-size: 1rem;
 }
 
 .card-toggle {
@@ -122,29 +110,111 @@ main {
 }
 .card-toggle:hover { filter: brightness(1.05); }
 
-.card-full {
-  margin-top: 0.8rem;
-  padding-top: 0.8rem;
-  border-top: 1px dashed var(--border);
-}
-
-.card-full blockquote {
-  margin: 0 0 0.6rem;
-  padding-left: 0.9rem;
-  border-left: 3px solid var(--accent);
-  color: var(--text);
-  font-style: italic;
-}
-
 .card-source {
   font-size: 0.8rem;
+  margin: 0;
 }
 .card-source a { color: var(--accent); }
 
-#daily-card-slot .card {
+/* --- connections --------------------------------------------------- */
+
+.connection-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.connection-name {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.kind-tag {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-radius: 999px;
+  padding: 0.15rem 0.5rem;
+}
+
+.connection-summary {
+  margin: 0.45rem 0 0.2rem;
+  font-size: 0.95rem;
+}
+
+.connection-note {
+  margin: 0 0 0.7rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.connection.featured {
   border-color: var(--accent);
   box-shadow: 0 2px 14px rgba(0, 0, 0, 0.06);
 }
+
+/* --- evidence (the real in-game text) ------------------------------ */
+
+.evidence-list {
+  list-style: none;
+  margin: 0.9rem 0 0;
+  padding: 0.9rem 0 0;
+  border-top: 1px dashed var(--border);
+}
+
+.evidence + .evidence {
+  margin-top: 1.1rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--border);
+}
+
+.evidence-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.evidence-name {
+  font-size: 0.98rem;
+  font-weight: 650;
+  margin: 0;
+}
+
+.evidence-text {
+  margin: 0.5rem 0 0.5rem;
+  padding-left: 0.9rem;
+  border-left: 3px solid var(--accent);
+  font-style: italic;
+  white-space: pre-wrap;
+}
+
+.result-count {
+  margin: 0 0 0.8rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.show-more {
+  display: block;
+  width: 100%;
+  margin-top: 0.4rem;
+  padding: 0.6rem;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--accent);
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+}
+.show-more:hover { border-color: var(--accent); }
 
 .browse-header {
   display: flex;

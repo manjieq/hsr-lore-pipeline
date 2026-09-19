@@ -4,11 +4,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-A zero-cost pipeline that scrapes Honkai: Star Rail lore text (light cones
-and relic sets) from the Fandom wiki, paraphrases it into short hooks via a
-local Ollama model, QA-checks the result deterministically, and serves it as
-a static site (GitHub Pages) with a daily rotating fact plus a browsable
-archive. See `README.md` for the fair-use/attribution posture and
+A zero-cost pipeline that scrapes Honkai: Star Rail lore text (light cones,
+relic sets, character stories) from the Fandom wiki, builds a deterministic
+entity graph over it, and serves that as a static site (GitHub Pages) with a
+daily rotating *connection* plus a browsable list of all of them.
+
+**The product pivoted.** It originally paraphrased each entry into a short
+hook via a local Ollama model and led with a daily fact. The user judged
+that worthless and was right: compressing one passage while showing the
+original directly beneath it strictly removes information, and the
+paraphrase visibly loses next to the real text. The value is in the *join*
+across entries, not a transform of a single entry. `pipeline/paraphrase.py`,
+`validate.py`, and the `short_text`/`qa_flags` fields all still exist and
+still run, but **the site no longer displays `short_text` at all.**
+
+See `README.md` for the fair-use/attribution posture and
 `docs/PLANNING.md` for the full original design doc and phase history
 (useful for "why does this work this way" context, but it's a historical
 record — e.g. the datamine-backup step it describes in Phase 8 was never
@@ -18,14 +28,18 @@ built, so don't assume everything in it reflects current reality).
 
 Use the project's venv, not a bare system `python` — dependencies
 (`pytest`, `ollama`, `requests`, `selectolax`, versions pinned in
-`requirements.txt`) live there. `tests/test_daily_selection_parity.py` also
+`requirements.txt`) live there. The interpreter path below is the Windows
+one; on Linux/macOS it is `.venv/bin/python`, and the venv is gitignored,
+so a fresh clone has none until you run `python -m venv .venv` and install
+`requirements.txt`. `tests/test_daily_selection_parity.py` also
 needs `node` on PATH (it skips itself if missing; CI's `ubuntu-latest`
 already has it):
 
 ```
 .venv/Scripts/python.exe -m pytest                        # all tests
 .venv/Scripts/python.exe -m pytest tests/test_validate.py -k some_test  # one test
-.venv/Scripts/python.exe -m pipeline.build_dataset         # merge raw_cache -> site/data/{entries,daily_cycle}.json
+.venv/Scripts/python.exe -m pipeline.build_dataset         # merge raw_cache -> site/data/{entries,daily_cycle,entities}.json
+.venv/Scripts/python.exe -m pipeline.entities             # rebuild only the entity graph from entries.json
 .venv/Scripts/python.exe -m pipeline.select_daily [--fresh]
 .venv/Scripts/python.exe -m pipeline.paraphrase <in.json> <out.json> [--limit N] [--revalidate]
 python ingest/wiki_scrape_lightcones.py [--limit N] [--refresh]
@@ -74,6 +88,43 @@ re-runs are cheap:
    `short_text` is present and `qa_flags` is empty) and calls
    `pipeline/select_daily.py`'s `build_or_extend_cycle` to update
    `daily_cycle.json`.
+
+**The entity graph (`pipeline/entities.py`) is the site's primary
+content**, and is built from `entries.json` alone — it needs no raw_cache
+and no Ollama, so it can be rebuilt on any clone. `build_dataset.py` writes
+it as part of a normal run; `python -m pipeline.entities` rebuilds just it.
+Things that were learned the hard way calibrating it against the full
+corpus, all of which have regression tests in `tests/test_entities.py`:
+
+- Characters come from a gazetteer derived from `character_story` entry
+  names, not from guessing. Alternate-outfit variants (`Dan Heng •
+  Imbibitor Lunae`) fold onto the base character.
+- **Do not strip a leading article in `_canonical_key`.** `The Herta` and
+  `Herta` are different characters in this corpus, and folding the article
+  merged them into one node whose display name flickered with entry order.
+  Article variants that really are one entity live in the curated
+  `_ALIASES` map instead, where the claim is reviewable.
+- **An honorific is only an honorific when a capitalized name follows.**
+  `Master`/`Lord` double as real epithets, and stripping unconditionally
+  turned `Master of Destruction` into the fragment `of Destruction`. Bare
+  rank nouns (`King`, `General`, `Mr`) are rejected outright — the run
+  regex stops at the period in `Mr. Svarog`, so `Mr` arrives detached and
+  once ranked as a top-20 three-category entity.
+- **One-word names need corpus-wide evidence, gathered strictly.** Per-
+  occurrence sentence-initial filtering drops real names (`Belobog stood
+  quiet`), but accepting any non-sentence-initial use promotes `Do`,
+  `Look`, `Are` and `You're`, because HSR lore is full of quoted dialogue
+  and `said, "Look` reads as mid-sentence. Evidence therefore requires a
+  preceding lowercase word character, in `MIN_EVIDENCE_ENTRIES` separate
+  entries.
+
+**The entry-level daily rotation is now orphaned.** `daily_cycle.json`,
+`pipeline/select_daily.py`, `selectDailyId` in `site/js/select-daily.js`,
+and their parity test are all still built, shipped and passing, but the
+page stopped reading them when the hero became a connection — that rotates
+via `connection_cycle` inside `entities.json`, which Python orders and the
+browser only indexes by day. Retiring the old rotation is a live decision,
+not an oversight.
 
 **`reviewed` is never hand-edited in the JSON.** It's a pure function of
 `qa_flags`, recomputed by `build_dataset.py` on every run. To "approve" a
