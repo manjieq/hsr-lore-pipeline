@@ -3,42 +3,48 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>HSR Lore Bites</title>
-  <meta name="description" content="Bite-sized Honkai: Star Rail lore, paraphrased daily. Tap to read the real in-game text." />
+  <title>HSR Lore Connections</title>
+  <meta name="description" content="Honkai: Star Rail lore, connected. See which light cones, relic sets, and character stories all touch the same name — and read the real in-game text behind each one." />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
   <header class="site-header">
-    <h1>HSR Lore Bites</h1>
-    <p class="tagline">One piece of Honkai: Star Rail lore a day, in plain language. Tap any card to read the real thing.</p>
+    <h1>HSR Lore Connections</h1>
+    <p class="tagline">
+      Honkai: Star Rail scatters one story across item descriptions and character
+      backstories. This finds the names that appear in more than one place, and puts
+      the real in-game text side by side.
+    </p>
   </header>
 
   <main>
-    <section id="daily-section" aria-label="Today's fact">
-      <h2 class="section-label">Today's fact</h2>
-      <div id="daily-card-slot"></div>
+    <section id="daily-section" aria-label="Today's connection">
+      <h2 class="section-label">Today's connection</h2>
+      <div id="daily-slot"></div>
     </section>
 
-    <section id="browse-section" aria-label="Browse all lore">
+    <section id="browse-section" aria-label="Browse all connections">
       <div class="browse-header">
-        <h2 class="section-label">Browse all</h2>
+        <h2 class="section-label">Every connection</h2>
         <div id="filter-tabs" class="filter-tabs" role="tablist"></div>
       </div>
       <input
         type="search"
         id="search-input"
         class="search-input"
-        placeholder="Search by name…"
-        aria-label="Search all lore entries by name"
+        placeholder="Search for a name, place, or faction…"
+        aria-label="Search connections by name"
       />
+      <p id="result-count" class="result-count" role="status"></p>
       <div id="browse-grid" class="card-grid"></div>
+      <button type="button" id="show-more" class="show-more" hidden>Show more</button>
     </section>
   </main>
 
   <footer class="site-footer">
     <p>
       Fan-made, non-commercial project. All quoted game text, names, and imagery belong to
-      COGNOSPHERE / HoYoverse. Every entry links back to its source &mdash; this project doesn't
+      COGNOSPHERE / HoYoverse. Every excerpt links back to its source &mdash; this project doesn't
       claim authorship of any in-game text.
     </p>
     <p><a href="https://github.com/manjieq/hsr-lore-pipeline" target="_blank" rel="noopener">Source on GitHub</a></p>
