@@ -18,9 +18,13 @@ import requests
 
 WIKI_BASE_URL = "https://honkai-star-rail.fandom.com/wiki/"
 API_URL = "https://honkai-star-rail.fandom.com/api.php"
+# Fandom asks scrapers to identify themselves and offer a contact channel.
+# That channel is the repo's issue tracker rather than a personal email, so
+# this public repo doesn't carry a personal address in its source.
 USER_AGENT = (
     "hsr-lore-pipeline/0.1 "
-    "(personal, non-commercial fan project; contact: eman80102909@gmail.com)"
+    "(personal, non-commercial fan project; "
+    "contact: https://github.com/manjieq/hsr-lore-pipeline/issues)"
 )
 CACHE_DIR = Path(__file__).resolve().parent.parent / "data" / "raw_cache" / "wiki"
 MIN_DELAY_SECONDS = 1.0
