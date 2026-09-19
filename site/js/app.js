@@ -5,11 +5,23 @@
   let entriesById = new Map();
   let activeFilter = "all";
   let searchQuery = "";
+  // Read once at startup and cleared by the first browse render: ?id= means
+  // "expand this card on arrival", not "keep re-expanding it on every
+  // subsequent render" (which is what re-reading the URL per render did --
+  // the card sprang back open on each search keystroke).
+  let pendingDeepLinkId = null;
 
+  // Escapes for both text and attribute position, so the quote characters
+  // matter: the previous textContent/innerHTML roundtrip left " and '
+  // untouched, which is fine inside an element but lets a value break out
+  // of an attribute (href, class) it is interpolated into below.
   function escapeHtml(str) {
-    const div = document.createElement("div");
-    div.textContent = str == null ? "" : str;
-    return div.innerHTML;
+    return String(str == null ? "" : str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
   }
 
   function renderCard(entry, { expanded } = {}) {
@@ -77,8 +89,8 @@
   function renderBrowse() {
     const grid = document.getElementById("browse-grid");
     grid.innerHTML = "";
-    const params = new URLSearchParams(window.location.search);
-    const deepLinkId = params.get("id");
+    const deepLinkId = pendingDeepLinkId;
+    pendingDeepLinkId = null;
     const query = searchQuery.trim().toLowerCase();
 
     const visible = entries.filter(
@@ -105,6 +117,11 @@
   }
 
   async function init() {
+    // renderBrowse() consumes pendingDeepLinkId, so keep a local copy for the
+    // scroll-into-view below, which runs after that first render.
+    const deepLinkId = new URLSearchParams(window.location.search).get("id");
+    pendingDeepLinkId = deepLinkId;
+
     const [entriesRes, cycleRes] = await Promise.all([
       fetch("data/entries.json"),
       fetch("data/daily_cycle.json"),
@@ -125,8 +142,6 @@
       renderBrowse();
     });
 
-    const params = new URLSearchParams(window.location.search);
-    const deepLinkId = params.get("id");
     if (deepLinkId) {
       const target = document.getElementById("entry-" + deepLinkId);
       if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
